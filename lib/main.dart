@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lemun/helpers/scooter_checker.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,6 +36,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() {
     setState(() {
+      ScooterChecker checker = ScooterChecker();
+      checker.fetchLinkScooter();
       _counter++;
     });
   }

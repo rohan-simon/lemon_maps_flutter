@@ -1,44 +1,41 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:lemun/models/link_scooter.dart';
 import 'package:lemun/providers/scooter_provider.dart';
 
 class ScooterChecker {
 
-  final ScooterProvider scooterProvider;
-  var _latitude = '';
-  var _longitude = '';
+  // final ScooterProvider scooterProvider;
+  var _latitude = '49.4404395';
+  var _longitude = '11.0760811';
 
-  ScooterChecker(this.scooterProvider);
+  ScooterChecker();
+  // ScooterChecker(this.scooterProvider);
 
   updateLocation({required latitude, required longitude})  {
     _latitude = latitude;
     _longitude = longitude;
   }
 
-  fetchAndUpdateNearbyScooters() async {
+  fetchLinkScooter() async {
     var client = http.Client();
+    print("teset1");
     try {
+    print("teset2");
       final gridResponse = await client.get(
           Uri.parse('https://vehicles.linkyour.city/reservation-api/local-vehicles/?latitude=$_latitude&longitude=$_longitude'));
+    print("teset3");
       final gridParsed = (jsonDecode(gridResponse.body));
-      final String? forecastURL = gridParsed['properties']?['forecast'];
-      if (forecastURL == null) {
-        // do nothing
-      } else {
-        final weatherResponse = await client.get(Uri.parse(forecastURL));
-        final weatherParsed = jsonDecode(weatherResponse.body);
-        final currentPeriod = weatherParsed['properties']?['periods']?[0];
-        if (currentPeriod != null) {
-          final temperature = currentPeriod['temperature'];
-          final shortForecast = currentPeriod['shortForecast'];
-          print(
-              'Got the weather at ${DateTime.now()}. $temperature F and $shortForecast');
-          if (temperature != null && shortForecast != null) {
-            // final condition = _shortForecastToCondition(shortForecast);
-            // weatherProvider.updateWeather(temperature, condition);
-          }
-        }
-      }
+      // final String? forecastURL = gridParsed['properties']?['forecast'];
+      final link = LinkScooter.fromJson(gridParsed?['vehicles'][0]);
+
+      print(gridParsed?['vehicles'][0]);
+      print('teset');
+
+      print(link.longitude);
+      print(link.latitude);
+      
+
     } catch (_) {
       // TODO(optional): Find a way to have the UI let the user know that we haven't been able to update data successfully
     } finally {
