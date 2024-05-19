@@ -1,19 +1,19 @@
 
 
 class LinkScooter {
-  final id;
-  final isBookable;
-  final vehicleStatus;
-  final bookingLength;
-  final batteryCharge;
-  final distanceRemaining;
-  final timeRemaining;
-  final latitude;
-  final longitude;
+  String id;
+  bool isBookable;
+  String vehicleStatus;
+  int bookingLength;
+  double batteryCharge;
+  double distanceRemaining;
+  int timeRemaining;
+  double latitude;
+  double longitude;
   
-  LinkScooter({this.isBookable, this.vehicleStatus, this.bookingLength, 
-    this.batteryCharge, this.distanceRemaining, this.timeRemaining, 
-    this.latitude, this.longitude, this.id});
+  LinkScooter({required this.isBookable, required this.vehicleStatus, required this.bookingLength, 
+    required this.batteryCharge, required this.distanceRemaining, required this.timeRemaining, 
+    required this.latitude, required this.longitude, required this.id});
 
   factory LinkScooter.fromJson(Map<String, dynamic> data) {
     final id = data['id'];

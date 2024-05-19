@@ -5,13 +5,12 @@ import 'package:lemun/providers/scooter_provider.dart';
 
 class ScooterChecker {
 
-  // final ScooterProvider scooterProvider;
+  final ScooterProvider scooterProvider;
   var _latitude = '49.4404395';
   var _longitude = '11.0760811';
-  LinkScooter? scooter;
 
-  ScooterChecker();
-  // ScooterChecker(this.scooterProvider);
+  // ScooterChecker();
+  ScooterChecker(this.scooterProvider);
 
   updateLocation({required latitude, required longitude})  {
     _latitude = latitude;
@@ -20,22 +19,18 @@ class ScooterChecker {
 
   fetchLinkScooter() async {
     var client = http.Client();
-    print("teset1");
     try {
-    print("teset2");
       final gridResponse = await client.get(
           Uri.parse('https://vehicles.linkyour.city/reservation-api/local-vehicles/?format=json&latitude=$_latitude&longitude=$_longitude'));
-    print("teset3");
       final gridParsed = (jsonDecode(gridResponse.body));
       // final String? forecastURL = gridParsed['properties']?['forecast'];
       final link = LinkScooter.fromJson(gridParsed?['vehicles'][0]);
 
       print(gridParsed?['vehicles'][0]);
-      print('teset');
 
       print(link.longitude);
       print(link.latitude);
-      scooter = link;
+      scooterProvider.updateScooters(link);
       
 
     } catch (e) {
