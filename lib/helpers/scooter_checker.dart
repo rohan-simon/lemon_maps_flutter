@@ -8,6 +8,7 @@ class ScooterChecker {
   // final ScooterProvider scooterProvider;
   var _latitude = '49.4404395';
   var _longitude = '11.0760811';
+  LinkScooter? scooter;
 
   ScooterChecker();
   // ScooterChecker(this.scooterProvider);
@@ -23,7 +24,7 @@ class ScooterChecker {
     try {
     print("teset2");
       final gridResponse = await client.get(
-          Uri.parse('https://vehicles.linkyour.city/reservation-api/local-vehicles/?latitude=$_latitude&longitude=$_longitude'));
+          Uri.parse('https://vehicles.linkyour.city/reservation-api/local-vehicles/?format=json&latitude=$_latitude&longitude=$_longitude'));
     print("teset3");
       final gridParsed = (jsonDecode(gridResponse.body));
       // final String? forecastURL = gridParsed['properties']?['forecast'];
@@ -34,10 +35,12 @@ class ScooterChecker {
 
       print(link.longitude);
       print(link.latitude);
+      scooter = link;
       
 
-    } catch (_) {
+    } catch (e) {
       // TODO(optional): Find a way to have the UI let the user know that we haven't been able to update data successfully
+      print(e);
     } finally {
       client.close();
     }
