@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lemun/helpers/scooter_checker.dart';
 import 'package:lemun/providers/scooter_provider.dart';
 import 'package:lemun/views/home_page.dart';
 import 'package:provider/provider.dart';

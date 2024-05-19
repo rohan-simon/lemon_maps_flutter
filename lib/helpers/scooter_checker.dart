@@ -24,13 +24,16 @@ class ScooterChecker {
           Uri.parse('https://vehicles.linkyour.city/reservation-api/local-vehicles/?format=json&latitude=$_latitude&longitude=$_longitude'));
       final gridParsed = (jsonDecode(gridResponse.body));
       // final String? forecastURL = gridParsed['properties']?['forecast'];
-      final link = LinkScooter.fromJson(gridParsed?['vehicles'][0]);
+      // final link = LinkScooter.fromJson(gridParsed?['vehicles'][0]);
+
+      final List<LinkScooter> links = (gridParsed['vehicles'] as List)
+        .map((vehicle) => LinkScooter.fromJson(vehicle)).toList();
 
       print(gridParsed?['vehicles'][0]);
 
-      print(link.longitude);
-      print(link.latitude);
-      scooterProvider.updateScooters(link);
+      // print(link.longitude);
+      // print(link.latitude);
+      scooterProvider.updateScooters(links);
       
 
     } catch (e) {

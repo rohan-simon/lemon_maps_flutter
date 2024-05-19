@@ -17,17 +17,16 @@ class _HomePageState extends State<HomePage> {
     return Consumer<ScooterProvider>(
       builder: (context, scooterProvider, child) {
 
-        if (!scooterProvider.hasUpdated) {
-          return Scaffold(
-            body: Text('no coords yet')
-          );
+        List<Text> coords = [Text('no coords yet')];
+
+        if (scooterProvider.links != null) {
+          coords = scooterProvider.links!.map((link) => Text('latitude: ${link.latitude}, longitude: ${link.longitude}')).toList();
         }
 
-        final lat = scooterProvider.link?.latitude ?? 0;
-        final long = scooterProvider.link?.longitude ?? 0;
-
         return Scaffold(
-          body: Text('latitude: $lat, longitude: $long')
+          body: Column(
+            children: coords
+          )
         );
       }
     );

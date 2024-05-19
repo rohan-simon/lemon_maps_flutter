@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:lemun/models/link_scooter.dart';
 
 class ScooterProvider extends ChangeNotifier {
-  LinkScooter? link;
+  List<LinkScooter>? links;
   bool hasUpdated = false;
 
-  updateScooters(LinkScooter updatedLink) {
-    link = updatedLink;
+  updateScooters(List<LinkScooter> updatedLink) {
+    links = updatedLink;
     hasUpdated = true;
     notifyListeners();
   }
