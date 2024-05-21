@@ -1,12 +1,17 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/providers/position_provider.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
-class CompassView extends StatefulWidget {
-  const CompassView({super.key});
+class CompassView extends StatefulWidget {  
+  final Vehicle vehicle;
+  final double latitude;
+  final double longitude;
+
+  CompassView({super.key, required this.vehicle}): latitude = vehicle.latitude, longitude = vehicle.longitude;
 
   @override
   State<CompassView> createState() => _CompassViewState();
@@ -21,9 +26,14 @@ class _CompassViewState extends State<CompassView> {
   @override
   void initState() {
     super.initState();
-
     _fetchPermissionStatus();
   }
+
+  double getDistance(double myLat, double myLong) {
+    return math.sqrt(_squared(myLat - widget.latitude) + _squared(myLong - widget.longitude));
+  }
+
+  num _squared(num x) { return x * x; }
 
   @override
   Widget build(BuildContext context) {
