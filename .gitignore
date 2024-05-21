@@ -24,7 +24,6 @@ migrate_working_dir/
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
-.dart_tool/
 .dart_tool/package_config_subset
 .dart_tool/package_config_subset.json
 .flutter-plugins
@@ -32,8 +31,6 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
-pubspec.lock
-pubspec.yaml
 
 # Symbolication related
 app.*.symbols
