@@ -1,4 +1,4 @@
-
+import 'package:lemun/models/vehicle_types.dart';
 
 class LinkScooter {
   String id;
@@ -10,10 +10,11 @@ class LinkScooter {
   int timeRemaining;
   double latitude;
   double longitude;
+  VehicleType vehicleType;
   
   LinkScooter({required this.isBookable, required this.vehicleStatus, required this.bookingLength, 
     required this.batteryCharge, required this.distanceRemaining, required this.timeRemaining, 
-    required this.latitude, required this.longitude, required this.id});
+    required this.latitude, required this.longitude, required this.id, required this.vehicleType});
 
   factory LinkScooter.fromJson(Map<String, dynamic> data) {
     final id = data['id'];
@@ -29,6 +30,6 @@ class LinkScooter {
     return LinkScooter(id: id, isBookable: isBookable, vehicleStatus: vehicleStatus,
                         bookingLength: bookingLength, batteryCharge: batteryCharge,
                         distanceRemaining: distanceRemaining, timeRemaining: timeRemaining,
-                        latitude: latitude, longitude: longitude);
+                        latitude: latitude, longitude: longitude, vehicleType: VehicleType.scooter);
   }
 }
