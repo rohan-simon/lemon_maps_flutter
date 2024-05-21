@@ -23,10 +23,10 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			jRWCBvMfLen3Mjpnjej8kbMuuKY=
+			Lg+weWuZ9QvZS6nkXBY9U1ktFSM=
 			</data>
 			<key>requirement</key>
-			<string>cdhash H"8d158206f31f2de9f7323a678de8fc91b32eb8a6"</string>
+			<string>cdhash H"2e0fb0796b99f50bd94ba9e45c163d53592d1523"</string>
 		</dict>
 		<key>Frameworks/FlutterMacOS.framework</key>
 		<dict>
@@ -36,6 +36,15 @@
 			</data>
 			<key>requirement</key>
 			<string>cdhash H"1cef86dc03a7feb0a59b33c7c94db94f3b27f9f2"</string>
+		</dict>
+		<key>Frameworks/geolocator_apple.framework</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			xOeZxVWJ640D6LoteePFhXwYVWo=
+			</data>
+			<key>requirement</key>
+			<string>cdhash H"c4e799c55589eb8d03e8ba2d79e3c5857c18556a"</string>
 		</dict>
 		<key>Frameworks/libswiftAppKit.dylib</key>
 		<dict>

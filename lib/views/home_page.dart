@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
 
         List<Text> coords = [Text('no coords yet')];
 
-        if (scooterProvider.links != null) {
+        if (scooterProvider.limes != null) {
           coords = scooterProvider.links!.map((link) => Text('latitude: ${link.latitude}, longitude: ${link.longitude}')).toList();
         }
 
