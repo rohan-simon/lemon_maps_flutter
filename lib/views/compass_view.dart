@@ -14,6 +14,7 @@ class CompassView extends StatefulWidget {
 
 class _CompassViewState extends State<CompassView> {
   bool _hasPermissions = false;
+  
   CompassEvent? _lastRead;
   DateTime? _lastReadAt;
 
@@ -26,26 +27,24 @@ class _CompassViewState extends State<CompassView> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: const Text('Flutter Compass'),
-        ),
-        body: Consumer<PositionProvider>(
-          builder: (context, positionProvider, child) {
-            if (_hasPermissions) {
-              return Column(
-                children: <Widget>[
-                  _buildManualReader(),
-                  Expanded(child: _buildCompass()),
-                ],
-              );
-            } else {
-              return _buildPermissionSheet();
-            }
-          },
-        ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text('Flutter Compass'),
+      ),
+      body: Consumer<PositionProvider>(
+        builder: (context, positionProvider, child) {
+          if (_hasPermissions) {
+            return Column(
+              children: <Widget>[
+                _buildManualReader(),
+                Expanded(child: _buildCompass()),
+              ],
+            );
+          } else {
+            return _buildPermissionSheet();
+          }
+        },
       ),
     );
   }
