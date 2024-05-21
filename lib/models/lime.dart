@@ -1,11 +1,15 @@
+import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/models/vehicle_types.dart';
 
-class Lime {
+class Lime implements Vehicle {
   String id;
+  @override
   double latitude;
+  @override
   double longitude;
   bool isReserved;
   bool isDisabled;
+  @override
   VehicleType vehicleType;
 
   Lime({required this.id, required this.latitude, required this.longitude,

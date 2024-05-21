@@ -132,7 +132,7 @@ class _CompassViewState extends State<CompassView> {
             ),
             child: Transform.rotate(
               angle: (direction * (math.pi / 180) * -1),
-              child: Image.asset('assets/compass.jpg'),
+              child: const Icon(Icons.arrow_circle_up)// Image.asset('assets/compass.jpg'),
             ),
           ),
         );
@@ -145,9 +145,9 @@ class _CompassViewState extends State<CompassView> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text('Location Permission Required'),
+          const Text('Location Permission Required'),
           ElevatedButton(
-            child: Text('Request Permissions'),
+            child: const Text('Request Permissions'),
             onPressed: () {
               Permission.locationWhenInUse.request().then((ignored) {
                 _fetchPermissionStatus();
