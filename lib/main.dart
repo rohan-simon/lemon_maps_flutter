@@ -16,14 +16,17 @@ class LemunApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
+    // TODO: delete before final! Temporary test vehicle for debugging compass_view.
     Lime testVehicle = Lime(id: '2', latitude: 10, longitude: 20, isDisabled: false, isReserved: false, vehicleType: VehicleType.bike); 
+    
     return MultiProvider(
       providers: [
         Provider<ScooterProvider>(create: (context) => ScooterProvider()),
         Provider<PositionProvider>(create: (context) => PositionProvider()),
       ],
       child: MaterialApp(
-        home: CompassView(vehicle: testVehicle)
+        home: CompassView(vehicle: testVehicle) // TODO: delete before final! Temporary call of compass_view for debugging.
       )
     );
   }
