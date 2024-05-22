@@ -1,4 +1,3 @@
-stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,location_type,parent_station,stop_timezone,wheelchair_boarding
 10005,10005,"40th Ave NE & NE 51st St","",47.6658859,-122.284897,1,,0,,America/Los_Angeles,1
 10010,10010,"NE 55th St & 39th Ave NE","",47.6685791,-122.285667,1,,0,,America/Los_Angeles,1
 10020,10020,"NE 55th St & 37th Ave NE","",47.6685791,-122.2883,1,,0,,America/Los_Angeles,1
