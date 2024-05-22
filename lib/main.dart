@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:lemun/models/bus_stop_db.dart';
 import 'package:lemun/models/lime.dart';
 import 'package:lemun/models/vehicle_types.dart';
 import 'package:lemun/providers/position_provider.dart';
@@ -7,8 +9,16 @@ import 'package:lemun/views/compass_view.dart';
 import 'package:lemun/views/home_page.dart';
 import 'package:provider/provider.dart';
 
+Future<BusStopDB> loadBusStopDB(String dataPath) async {
+
+
+  return BusStopDB.initializeFromCSV(await rootBundle.loadString(dataPath));
+
+} 
 void main() {
-  runApp(const LemunApp());
+  const busDataPath = 'lib/assets/bus_stops.csv';
+  WidgetsFlutterBinding.ensureInitialized();
+  loadBusStopDB(busDataPath).then((value) => runApp(const LemunApp()));
 }
 
 class LemunApp extends StatelessWidget {
@@ -26,7 +36,7 @@ class LemunApp extends StatelessWidget {
         ChangeNotifierProvider<PositionProvider>(create: (context) => PositionProvider()),
       ],
       child: MaterialApp(
-        home: CompassView(vehicle: testVehicle,) // TODO: delete before final! Temporary call of compass_view for debugging.
+        // home: CompassView(vehicle: testVehicle,) // TODO: delete before final! Temporary call of compass_view for debugging.
       )
     );
   }
