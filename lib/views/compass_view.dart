@@ -45,12 +45,7 @@ class _CompassViewState extends State<CompassView> {
       body: Consumer<PositionProvider>(
         builder: (context, positionProvider, child) {
           if (_hasPermissions) {
-            return Column(
-              children: <Widget>[
-                _buildManualReader(),
-                Expanded(child: _buildCompass()),
-              ],
-            );
+            return _buildCompass();
           } else {
             return _buildPermissionSheet();
           }
@@ -146,15 +141,6 @@ class _CompassViewState extends State<CompassView> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           const Text('Location Permission Required'),
-          ElevatedButton(
-            child: const Text('Request Permissions'),
-            onPressed: () {
-              Permission.locationWhenInUse.request().then((ignored) {
-                _fetchPermissionStatus();
-              });
-            },
-          ),
-          SizedBox(height: 16),
           ElevatedButton(
             child: Text('Open App Settings'),
             onPressed: () {
