@@ -84,16 +84,16 @@ class _MapViewState extends State<MapView> {
 
   Widget buildLegend() {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       color: Colors.amber[100],
       width: double.infinity, // Make the container fit the width of the screen
       child: Column(
         children: [
-          Text(
+          const Text(
             'Legend',
             style: TextStyle(color: Colors.purple, fontSize: 20),
           ),
-          SizedBox(height: 8,),
+          const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -122,41 +122,44 @@ class _MapViewState extends State<MapView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          flex: 5,
-          child: FlutterMap(
-            mapController: _mapController,
-            options: MapOptions(
-              initialCenter:  _currentPosition,
-              initialZoom: 9.2,
-            ),
-            children: [
-              TileLayer(
-                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.example.app',
+    return Scaffold(
+      body: Column(
+        children: [
+          Expanded(
+            flex: 5,
+            child: FlutterMap(
+              mapController: _mapController,
+              options: MapOptions(
+                minZoom: 14,
+                initialCenter:  _currentPosition,
+                initialZoom: 9.2,
               ),
-              MarkerLayer(
-                markers: [
-                  Marker(
-                    width: 80,
-                    height: 80,
-                    point: _currentPosition,
-                    rotate: false,
-                    child: Icon(Icons.catching_pokemon, color: Colors.red, size: 40),
-                  ),
-                  ...createVehicleMarkers(widget.vehicles)
-                ]
-              )
-            ],
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  userAgentPackageName: 'com.example.app',
+                ),
+                MarkerLayer(
+                  markers: [
+                    Marker(
+                      width: 80,
+                      height: 80,
+                      point: _currentPosition,
+                      rotate: false,
+                      child: Icon(Icons.catching_pokemon, color: Colors.red, size: 40),
+                    ),
+                    ...createVehicleMarkers(widget.vehicles)
+                  ]
+                )
+              ],
+            ),
           ),
-        ),
-        Expanded(
-          flex: 1,
-          child: buildLegend()
-        )
-      ],
+          Expanded(
+            flex: 1,
+            child: buildLegend()
+          )
+        ],
+      ),
     );
   }
 }
