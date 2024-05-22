@@ -18,7 +18,7 @@ class LemunApp extends StatelessWidget {
   Widget build(BuildContext context) {
     
     // TODO: delete before final! Temporary test vehicle for debugging compass_view.
-    Lime testVehicle = Lime(id: '2', latitude: 10, longitude: 20, isDisabled: false, isReserved: false, vehicleType: VehicleType.bike); 
+    Lime testVehicle = Lime(id: '2', latitude: -90.9042, longitude: 116.4074, isDisabled: false, isReserved: false, vehicleType: VehicleType.bike); 
     
     return MultiProvider(
       providers: [
