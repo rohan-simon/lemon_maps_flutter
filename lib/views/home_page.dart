@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:lemun/helpers/scooter_checker.dart';
+import 'package:lemun/models/lime.dart';
+import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/providers/drawing_provider.dart';
 import 'package:lemun/views/draw_area.dart';
 import 'package:lemun/views/palette.dart';
 import 'package:provider/provider.dart';
 import 'package:lemun/providers/scooter_provider.dart';
+import 'package:lemun/views/map_view.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,9 +26,13 @@ class _HomePageState extends State<HomePage> {
 
         List<Text> coords = [Text('no coords yet')];
 
+        List<Vehicle> limes = [];
         if (scooterProvider.limes != null) {
           coords = scooterProvider.links!.map((link) => Text('latitude: ${link.latitude}, longitude: ${link.longitude}')).toList();
+          limes = scooterProvider.limes!;
         }
+
+        // limes = scooterProvider.limes ?? [];
 
         return Scaffold(
           appBar: AppBar(
@@ -65,16 +73,13 @@ class _HomePageState extends State<HomePage> {
           body: Center(
           child: Container(
             // decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-            child: const Stack(
+            child:  Stack(
               children: [
-                Opacity(
-                  opacity: 0.8,
-                   child: CircleAvatar(
-                        radius: 200,
-                        backgroundImage: AssetImage('lib/assets/lemon_slice.jpg'),
-                       ),
-                 ),
-                Opacity(
+
+                MapView(vehicles: limes),
+
+                // Canvas to draw on
+                const Opacity(
                   opacity: 0.5,
                   child: DrawArea(width: 400, height: 400)
                 ),

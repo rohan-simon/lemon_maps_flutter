@@ -10,7 +10,7 @@ import 'package:lemun/views/compass_view.dart';
 class MapView extends StatefulWidget {
   final List<Vehicle> vehicles;
 
-  const MapView({super.key, required this.vehicles});
+  MapView({super.key, required this.vehicles});
 
   @override
   _MapViewState createState() => _MapViewState();

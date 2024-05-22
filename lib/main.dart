@@ -38,7 +38,8 @@ class LemunApp extends StatelessWidget {
         ChangeNotifierProvider<DrawingProvider>(create: (context) => DrawingProvider(width: 400, height: 400)),
       ],
       child: MaterialApp(
-        home: CompassView(vehicle: testVehicle,) // TODO: delete before final! Temporary call of compass_view for debugging.
+        // home: CompassView(vehicle: testVehicle,) // TODO: delete before final! Temporary call of compass_view for debugging.
+        home: HomePage()
       )
     );
   }
