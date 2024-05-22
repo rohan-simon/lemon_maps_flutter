@@ -113,7 +113,7 @@ class _CompassViewState extends State<CompassView> {
             ),
             child: Transform.rotate(
               angle: (direction * (math.pi / 180) * -1 + getBearing(positionProvider.latitude, positionProvider.longitude)),
-              child: Image.asset('assets/compass.png') //const Icon(Icons.arrow_circle_up)// Image.asset('assets/compass.jpg'),
+              child: const Image(image: AssetImage('lib/assets/compass.png')) //const Icon(Icons.arrow_circle_up)// Image.asset('assets/compass.jpg'),
             ),
           ),
         );
