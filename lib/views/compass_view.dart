@@ -63,7 +63,7 @@ class _CompassViewState extends State<CompassView> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Flutter Compass'),
+        title: const Text('Flutter Compass'), // TODO: Add back button
       ),
       body: Consumer<PositionProvider>(
         builder: (context, positionProvider, child) {
@@ -112,8 +112,8 @@ class _CompassViewState extends State<CompassView> {
               shape: BoxShape.circle,
             ),
             child: Transform.rotate(
-              angle: (direction * (math.pi / 180) * -1 + getBearing(positionProvider.latitude, positionProvider.longitude)),
-              child: const Image(image: AssetImage('lib/assets/compass.png')) //const Icon(Icons.arrow_circle_up)// Image.asset('assets/compass.jpg'),
+              angle: (_degrees2Radians(direction) * -1 + _degrees2Radians(getBearing(positionProvider.latitude, positionProvider.longitude))),
+              child: const Image(image: AssetImage('lib/assets/compass.png'))
             ),
           ),
         );
