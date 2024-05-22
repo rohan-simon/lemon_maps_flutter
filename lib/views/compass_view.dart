@@ -19,9 +19,6 @@ class CompassView extends StatefulWidget {
 
 class _CompassViewState extends State<CompassView> {
   bool _hasPermissions = false;
-  
-  CompassEvent? _lastRead;
-  DateTime? _lastReadAt;
 
   @override
   void initState() {
@@ -29,10 +26,21 @@ class _CompassViewState extends State<CompassView> {
     _fetchPermissionStatus();
   }
 
+  // Returns double representing user's distance (in metres) to selected vehicle.
+  // Parameters:
+  // - double myLat: user's latitude coordinate
+  // - double myLong: user's longitude coordinate
   double getDistance(double myLat, double myLong) {
     return math.sqrt(_squared(myLat - widget.latitude) + _squared(myLong - widget.longitude));
   }
 
+  double getBearing(double myLat, double myLong) {
+    
+    
+    return 0;
+  }
+
+  // Helper method; defines a square function. Returns the square of a provided number x.
   num _squared(num x) { return x * x; }
 
   @override
@@ -54,44 +62,7 @@ class _CompassViewState extends State<CompassView> {
     );
   }
 
-  Widget _buildManualReader() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        children: <Widget>[
-          ElevatedButton(
-            child: Text('Read Value'),
-            onPressed: () async {
-              final CompassEvent tmp = await FlutterCompass.events!.first;
-              setState(() {
-                _lastRead = tmp;
-                _lastReadAt = DateTime.now();
-              });
-            },
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    '$_lastRead',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  Text(
-                    '$_lastReadAt',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
+  // Builds compass
   Widget _buildCompass() {
     return StreamBuilder<CompassEvent>(
       stream: FlutterCompass.events,
@@ -101,7 +72,7 @@ class _CompassViewState extends State<CompassView> {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }
@@ -110,19 +81,19 @@ class _CompassViewState extends State<CompassView> {
 
         // if direction is null, then device does not support this sensor
         // show error message
-        if (direction == null)
-          return Center(
+        if (direction == null) {
+          return const Center(
             child: Text("Device does not have sensors !"),
           );
-
+        }
         return Material(
-          shape: CircleBorder(),
+          shape: const CircleBorder(),
           clipBehavior: Clip.antiAlias,
           elevation: 4.0,
           child: Container(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             alignment: Alignment.center,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               shape: BoxShape.circle,
             ),
             child: Transform.rotate(
@@ -142,7 +113,7 @@ class _CompassViewState extends State<CompassView> {
         children: <Widget>[
           const Text('Location Permission Required'),
           ElevatedButton(
-            child: Text('Open App Settings'),
+            child: const Text('Open App Settings'),
             onPressed: () {
               openAppSettings().then((opened) {
                 //
