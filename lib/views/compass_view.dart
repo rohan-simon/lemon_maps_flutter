@@ -34,14 +34,29 @@ class _CompassViewState extends State<CompassView> {
     return math.sqrt(_squared(myLat - widget.latitude) + _squared(myLong - widget.longitude));
   }
 
+  // Returns double representing bearing.
   double getBearing(double myLat, double myLong) {
+    double dLon = (widget.longitude - myLong);
     
-    
-    return 0;
+    double x = math.cos(_degrees2Radians(widget.latitude)) * math.sin(_degrees2Radians(dLon));
+    double y = math.cos(_degrees2Radians(myLat)) * math.sin(_degrees2Radians(widget.latitude)) 
+             - math.sin(_degrees2Radians(myLat)) * math.cos(_degrees2Radians(widget.latitude)) * math.cos(_degrees2Radians(dLon));
+    double bearing = math.atan2(x, y);
+    return _radians2Degrees(bearing);
+  }
+
+  double _radians2Degrees(double x) {
+    return x * 180 / math.pi;
+  }
+
+  double _degrees2Radians(double x) {
+    return x / 180 * math.pi;
   }
 
   // Helper method; defines a square function. Returns the square of a provided number x.
-  num _squared(num x) { return x * x; }
+  num _squared(num x) {
+    return x * x;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +68,7 @@ class _CompassViewState extends State<CompassView> {
       body: Consumer<PositionProvider>(
         builder: (context, positionProvider, child) {
           if (_hasPermissions) {
-            return _buildCompass();
+            return _buildCompass(positionProvider);
           } else {
             return _buildPermissionSheet();
           }
@@ -63,7 +78,7 @@ class _CompassViewState extends State<CompassView> {
   }
 
   // Builds compass
-  Widget _buildCompass() {
+  Widget _buildCompass(PositionProvider positionProvider) {
     return StreamBuilder<CompassEvent>(
       stream: FlutterCompass.events,
       builder: (context, snapshot) {
@@ -97,8 +112,8 @@ class _CompassViewState extends State<CompassView> {
               shape: BoxShape.circle,
             ),
             child: Transform.rotate(
-              angle: (direction * (math.pi / 180) * -1),
-              child: const Icon(Icons.arrow_circle_up)// Image.asset('assets/compass.jpg'),
+              angle: (direction * (math.pi / 180) * -1 + getBearing(positionProvider.latitude, positionProvider.longitude)),
+              child: Image.asset('assets/compass.png') //const Icon(Icons.arrow_circle_up)// Image.asset('assets/compass.jpg'),
             ),
           ),
         );

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:lemun/models/bus_stop_db.dart';
 import 'package:lemun/models/lime.dart';
 import 'package:lemun/models/vehicle_types.dart';
 import 'package:lemun/providers/drawing_provider.dart';
@@ -8,8 +10,16 @@ import 'package:lemun/views/compass_view.dart';
 import 'package:lemun/views/home_page.dart';
 import 'package:provider/provider.dart';
 
+Future<BusStopDB> loadBusStopDB(String dataPath) async {
+
+
+  return BusStopDB.initializeFromCSV(await rootBundle.loadString(dataPath));
+
+} 
 void main() {
-  runApp(const LemunApp());
+  const busDataPath = 'lib/assets/bus_stops.csv';
+  WidgetsFlutterBinding.ensureInitialized();
+  loadBusStopDB(busDataPath).then((value) => runApp(const LemunApp()));
 }
 
 class LemunApp extends StatelessWidget {
@@ -20,19 +30,15 @@ class LemunApp extends StatelessWidget {
     
     // TODO: delete before final! Temporary test vehicle for debugging compass_view.
     Lime testVehicle = Lime(id: '2', latitude: 10, longitude: 20, isDisabled: false, isReserved: false, vehicleType: VehicleType.bike); 
-
-    const drawAreaWidth = 400.0;
-    const drawAreaHeight = 400.00;
     
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ScooterProvider>(create: (context) => ScooterProvider()),
         ChangeNotifierProvider<PositionProvider>(create: (context) => PositionProvider()),
-        ChangeNotifierProvider<DrawingProvider>(create: (context) => DrawingProvider(width: drawAreaWidth, height: drawAreaHeight)),
+        ChangeNotifierProvider<DrawingProvider>(create: (context) => DrawingProvider(width: 400, height: 400)),
       ],
       child: MaterialApp(
-        // home: CompassView(vehicle: testVehicle,) // TODO: delete before final! Temporary call of compass_view for debugging.
-        home: HomePage()
+        home: CompassView(vehicle: testVehicle,) // TODO: delete before final! Temporary call of compass_view for debugging.
       )
     );
   }
