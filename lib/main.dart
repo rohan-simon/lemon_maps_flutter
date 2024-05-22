@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lemun/models/lime.dart';
+import 'package:lemun/models/vehicle_types.dart';
+import 'package:lemun/providers/position_provider.dart';
 import 'package:lemun/providers/scooter_provider.dart';
+import 'package:lemun/views/compass_view.dart';
 import 'package:lemun/views/home_page.dart';
 import 'package:provider/provider.dart';
 
@@ -12,10 +16,17 @@ class LemunApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ScooterProvider(),
-      child: const MaterialApp(
-        home: HomePage()
+    
+    // TODO: delete before final! Temporary test vehicle for debugging compass_view.
+    Lime testVehicle = Lime(id: '2', latitude: 10, longitude: 20, isDisabled: false, isReserved: false, vehicleType: VehicleType.bike); 
+    
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ScooterProvider>(create: (context) => ScooterProvider()),
+        ChangeNotifierProvider<PositionProvider>(create: (context) => PositionProvider()),
+      ],
+      child: MaterialApp(
+        home: CompassView(vehicle: testVehicle,) // TODO: delete before final! Temporary call of compass_view for debugging.
       )
     );
   }
