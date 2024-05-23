@@ -4,6 +4,7 @@ import 'package:lemun/models/bus_stop.dart';
 import 'package:lemun/models/bus_stop_db.dart';
 import 'package:lemun/models/lime.dart';
 import 'package:lemun/models/vehicle_types.dart';
+import 'package:lemun/providers/drawing_provider.dart';
 import 'package:lemun/providers/position_provider.dart';
 import 'package:lemun/providers/scooter_provider.dart';
 import 'package:lemun/views/compass_view.dart';
@@ -36,7 +37,7 @@ class LemunApp extends StatelessWidget {
     //   print(stop.toString());
     // }
     
-    // TODO: delete before final! Temporary test vehicle for debugging compass_view.
+    // TODO: delete before final! Temporary test vehicles for debugging compass_view.
     Lime testVehicle1 = Lime(id: '2', latitude: 49.2827, longitude: -123.1207, isDisabled: false, isReserved: false, vehicleType: VehicleType.bike);
     Lime testVehicle2 = Lime(id: '3', latitude: 47.1257, longitude: -122.2930, isDisabled: false, isReserved: false, vehicleType: VehicleType.bike); 
     Lime testVehicle3 = Lime(id: '4', latitude: 47.6101, longitude: -122.2015, isDisabled: false, isReserved: false, vehicleType: VehicleType.bike);
@@ -47,6 +48,7 @@ class LemunApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<ScooterProvider>(create: (context) => ScooterProvider()),
         ChangeNotifierProvider<PositionProvider>(create: (context) => PositionProvider()),
+        ChangeNotifierProvider<DrawingProvider>(create: (context) => DrawingProvider(width: 0, height: 0 /*TODO: replace values*/)),
       ],
       child: MaterialApp(
         home: MapView(vehicles: testList) // TODO: delete before final! Temporary call of compass_view for debugging.
