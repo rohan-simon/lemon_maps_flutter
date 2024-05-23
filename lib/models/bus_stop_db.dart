@@ -8,19 +8,6 @@ class BusStopDB {
     return List<BusStop>.from(_busStops, growable: false);
   }
 
-  // BusStopDB.initializeFromCSV(String csvString, this._busStops) {
-  //   print('Entered constructor successfully');
-  //   //print(csvString);
-  //   List<List<dynamic>> listOfStops = const CsvToListConverter().convert(csvString);
-    
-  //   List<BusStop> resList = (listOfStops).map( 
-  //                       (element) {
-  //                         return BusStop(name: element[2], latitude: element[3], longitude: element[4]);
-  //                       }).toList();
-
-  //   _busStops = resList;
-    
-  // }
 
   BusStopDB.initializeFromCSV(String csvString) : _busStops = _decodeBusStopList(csvString);
 
@@ -43,31 +30,12 @@ class BusStopDB {
 
       }
 
-      print('$elemList, size: ${elemList.length}');
+      //print('$elemList, size: ${elemList.length}');
 
       
     }
     
-    return [];
-
-
-    //print(csvString);
-
-    //List<List<dynamic>> listOfStops = const CsvToListConverter().convert(csvString);
-
-    // print('List of Stops');
-    // //print(listOfStops);
-    // print(listOfStops[0]);
-    
-    // final List<BusStop> resList = (listOfStops as List).map( 
-    //                     (element) {
-    //                       return BusStop(name: element[2], latitude: element[4], longitude: element[5]);
-    //                     }).toList();
-
-    // print('Res List');
-    // print(resList);
-
-    // return resList;
+    return busStops;
 
   }
   
