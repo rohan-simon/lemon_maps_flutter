@@ -41,9 +41,6 @@ class ScooterChecker {
       final List<Lime> limes = (limeParsed['data']?['bikes'] as List)
         .map((vehicle) => Lime.fromJson(vehicle)).toList();
 
-      // print(linkParsed?['vehicles'][0]);
-      print(limeParsed);
-
       // Update scooter provider
       scooterProvider.updateScooters(links, limes);
       

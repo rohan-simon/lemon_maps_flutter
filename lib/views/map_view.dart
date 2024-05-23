@@ -53,7 +53,6 @@ class _MapViewState extends State<MapView> {
   }
 
   List<Marker> createVehicleMarkers(List<Vehicle> vehicles) {
-    print(vehicles.length);
     return vehicles.map((vehicle) {
       return Marker(
         width: 80.0,
@@ -100,7 +99,12 @@ class _MapViewState extends State<MapView> {
               legendItem(Icons.directions_bike, Colors.green, 'Bike'),
               legendItem(Icons.electric_scooter, Colors.orange, 'Scooter'),
               legendItem(Icons.directions_bus, Colors.blue, 'Bus'),
-              legendItem(Icons.catching_pokemon, Colors.red, 'You'),
+              GestureDetector(
+                onTap: () {
+                  _getCurrentLocation();
+                },
+                child: legendItem(Icons.catching_pokemon, Colors.red, 'You')
+              ),
             ],
           ),
         ],
@@ -142,14 +146,14 @@ class _MapViewState extends State<MapView> {
                 ),
                 MarkerLayer(
                   markers: [
+                    ...createVehicleMarkers(widget.vehicles),
                     Marker(
                       width: 80,
                       height: 80,
                       point: _currentPosition,
                       rotate: false,
                       child: Icon(Icons.catching_pokemon, color: Colors.red, size: 40),
-                    ),
-                    ...createVehicleMarkers(widget.vehicles)
+                    )                    
                   ]
                 )
               ],
