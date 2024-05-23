@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lemun/models/bus_stop.dart';
 import 'package:lemun/models/bus_stop_db.dart';
 import 'package:lemun/models/lime.dart';
 import 'package:lemun/models/vehicle_types.dart';
@@ -19,14 +20,21 @@ Future<BusStopDB> loadBusStopDB(String dataPath) async {
 void main() {
   const busDataPath = 'lib/assets/bus_stops.csv';
   WidgetsFlutterBinding.ensureInitialized();
-  loadBusStopDB(busDataPath).then((value) => runApp(const LemunApp()));
+  loadBusStopDB(busDataPath).then((value) => runApp(LemunApp(value)));
 }
 
 class LemunApp extends StatelessWidget {
-  const LemunApp({super.key});
+
+  final BusStopDB _busStops;
+  
+  const LemunApp(this._busStops, {super.key});
 
   @override
   Widget build(BuildContext context) {
+
+    // for (BusStop stop in _busStops.all) {
+    //   print(stop.toString());
+    // }
     
     // TODO: delete before final! Temporary test vehicle for debugging compass_view.
     Lime testVehicle1 = Lime(id: '2', latitude: 49.2827, longitude: -123.1207, isDisabled: false, isReserved: false, vehicleType: VehicleType.bike);
