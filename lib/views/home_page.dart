@@ -35,11 +35,103 @@ class _HomePageState extends State<HomePage> {
           limes = scooterProvider.limes!;
         }
 
+
         // limes = scooterProvider.limes ?? [];
 
         return Scaffold(
-          appBar: AppBar(
-          title: const Text('Drawing App'),
+          appBar: opacityProvider.appBar,
+          drawer: opacityProvider.drawer,
+          body: Center(
+          child: Stack(
+            children: [
+          
+              MapView(vehicles: limes),
+              opacityProvider.canvas
+
+            ],
+          ),
+        ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () => _showHideCanvas(context),
+        //   child: Icon(Icons.edit)
+        // ),
+        );
+      }
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    final singleUseScooterProvider = Provider.of<ScooterProvider>(context, listen: false);
+    final ScooterChecker sc = ScooterChecker(singleUseScooterProvider);
+    final singleUseOpacityProvider = Provider.of<OpacityProvider>(context, listen: false);
+    singleUseOpacityProvider.appBar = AppBar(
+      title: const Text('LemÚn'),
+      actions: <Widget>[
+        Semantics(
+          button: true,
+          label: 'Canvas',
+          hint: 'allows drawing on the map',
+          child: ElevatedButton(
+            onPressed: () => _showHideCanvas(context),
+            child: const Icon(Icons.edit)
+          )
+        )
+      ]
+    );
+    sc.fetchLinkScooter();
+  }
+
+
+    _clear(BuildContext context) {
+    final nonListen = Provider.of<DrawingProvider>(context, listen: false);
+    nonListen.clear();
+  }
+
+  _undo(BuildContext context) {
+    final nonListen = Provider.of<DrawingProvider>(context, listen: false);
+    nonListen.undo();
+  }
+
+  _redo(BuildContext context) {
+    final nonListen = Provider.of<DrawingProvider>(context, listen: false);
+    nonListen.redo();
+  }
+  
+  _showHideCanvas(BuildContext context) {
+    final nonListen = Provider.of<OpacityProvider>(context, listen: false);
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    Opacity canvas;
+    AppBar? appBar;
+    Drawer? drawer;
+
+    if (nonListen.showCanvas) {
+      canvas = const Opacity(opacity: 0.0);
+      appBar = AppBar(
+        title: const Text('LemÚn'),
+        actions: <Widget>[
+          Semantics(
+            button: true,
+            label: 'Canvas',
+            hint: 'allows drawing on the map',
+            child: ElevatedButton(
+              onPressed: () => _showHideCanvas(context),
+              child: const Icon(Icons.edit)
+            )
+          )
+        ]
+      );
+      drawer = null;
+    } else {
+      canvas = Opacity(
+        opacity: 0.5,
+        child: DrawArea(width: width, height: height)
+      );
+      appBar = AppBar(
+          title: const Text('LemÚn'),
           actions: <Widget>[
             Semantics(
               button: true,
@@ -68,70 +160,23 @@ class _HomePageState extends State<HomePage> {
                 child: const Icon(Icons.redo)
               ),
             ),
+            Semantics(
+              button: true,
+              label: 'Canvas',
+              hint: 'allows drawing on the map',
+              child: ElevatedButton(
+                onPressed: () => _showHideCanvas(context),
+                child: const Icon(Icons.edit)
+              )
+            ),
           ]
-        ),
-        drawer: Drawer(
-          child: Palette(context),
-        ),
-          body: Center(
-          child: Stack(
-            children: [
-          
-              MapView(vehicles: limes),
-              opacityProvider.canvas
-
-            ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => _showHideCanvas(context),
-        ),
         );
-      }
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    final singleUseScooterProvider = Provider.of<ScooterProvider>(context, listen: false);
-    final ScooterChecker sc = ScooterChecker(singleUseScooterProvider);
-    sc.fetchLinkScooter();
-  }
-
-
-    _clear(BuildContext context) {
-    final nonListen = Provider.of<DrawingProvider>(context, listen: false);
-    nonListen.clear();
-  }
-
-  _undo(BuildContext context) {
-    final nonListen = Provider.of<DrawingProvider>(context, listen: false);
-    nonListen.undo();
-  }
-
-  _redo(BuildContext context) {
-    final nonListen = Provider.of<DrawingProvider>(context, listen: false);
-    nonListen.redo();
-  }
-  
-  _showHideCanvas(BuildContext context) {
-    final nonListen = Provider.of<OpacityProvider>(context, listen: false);
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    Opacity canvas;
-
-    if (nonListen.showCanvas) {
-      canvas = const Opacity(opacity: 0.0);
-    } else {
-      canvas = Opacity(
-        opacity: 0.5,
-        child: DrawArea(width: width, height: height)
-      );
+        drawer = Drawer(
+          child: Palette(context),
+        );
     }
 
-    nonListen.updateCanvas(canvas, !nonListen.showCanvas);
+    nonListen.updateCanvas(canvas, !nonListen.showCanvas, appBar, drawer);
     
   }
 }
