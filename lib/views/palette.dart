@@ -15,14 +15,14 @@ class Palette extends StatelessWidget {
         scrollDirection: Axis.vertical,
         children: [
           const DrawerHeader(
-            child: Text('Tools and Colors'),
+            child: Text('Colors'),
           ),
           // tool button part of the drawer
-          _buildToolButton(name: 'Line', icon: Icons.timeline_sharp, tool: Tools.line, provider: drawingProvider),
-          _buildToolButton(name: 'Stroke', icon: Icons.brush, tool: Tools.stroke, provider: drawingProvider),
-          _buildToolButton(name: 'Oval', icon: Icons.circle, tool: Tools.oval, provider: drawingProvider),
+          // _buildToolButton(name: 'Line', icon: Icons.timeline_sharp, tool: Tools.line, provider: drawingProvider),
+          // _buildToolButton(name: 'Stroke', icon: Icons.brush, tool: Tools.stroke, provider: drawingProvider),
+          // _buildToolButton(name: 'Oval', icon: Icons.circle, tool: Tools.oval, provider: drawingProvider),
 
-          const Divider(),
+          // const Divider(),
           // color button part of the drawer
           _buildColorButton('Red', Colors.red, drawingProvider),
           _buildColorButton('Orange', Colors.orange, drawingProvider),
