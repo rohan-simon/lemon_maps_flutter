@@ -1,12 +1,19 @@
 import 'dart:math';
 
-class BusStop {
+import 'package:lemun/models/vehicle.dart';
+import 'package:lemun/models/vehicle_types.dart';
+
+class BusStop implements Vehicle {
 
   BusStop({required this.name, required this.latitude, required this.longitude});
 
   final String name;
+  @override
   final double latitude;
+  @override
   final double longitude;
+  @override
+  final VehicleType vehicleType = VehicleType.bus;
 
 
  

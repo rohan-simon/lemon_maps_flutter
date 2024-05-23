@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:lemun/models/vehicle.dart';
+import 'package:lemun/models/vehicle_types.dart';
 import 'package:lemun/providers/position_provider.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -34,6 +35,15 @@ class _CompassViewState extends State<CompassView> {
     return math.sqrt(_squared(myLat - widget.latitude) + _squared(myLong - widget.longitude));
   }
 
+  String vehicleTypeAsString(VehicleType type) {
+    switch(type) {
+      case VehicleType.bike: return 'Bike';
+      case VehicleType.scooter: return 'Scooter';
+      case VehicleType.bus: return 'Bus';
+      case VehicleType.none: throw Exception('Invalid action');
+    }
+  }
+
   // Returns double representing bearing.
   double getBearing(double myLat, double myLong) {
     double dLon = (widget.longitude - myLong);
@@ -63,7 +73,7 @@ class _CompassViewState extends State<CompassView> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Flutter Compass'), // TODO: Add back button
+        title: Text('${vehicleTypeAsString(widget.vehicle.vehicleType)}'), // TODO: Add back button
       ),
       body: Consumer<PositionProvider>(
         builder: (context, positionProvider, child) {

@@ -39,7 +39,7 @@ class LemunApp extends StatelessWidget {
     // }
     
     // TODO: delete before final! Temporary test vehicles for debugging compass_view.
-    Lime testVehicle1 = Lime(id: '2', latitude: 49.2827, longitude: -123.1207, isDisabled: false, isReserved: false, vehicleType: VehicleType.bike);
+    Lime testVehicle1 = Lime(id: '2', latitude: 47.6546, longitude: -122.3075, isDisabled: false, isReserved: false, vehicleType: VehicleType.bike);
     Lime testVehicle2 = Lime(id: '3', latitude: 47.1257, longitude: -122.2930, isDisabled: false, isReserved: false, vehicleType: VehicleType.bike); 
     Lime testVehicle3 = Lime(id: '4', latitude: 47.6101, longitude: -122.2015, isDisabled: false, isReserved: false, vehicleType: VehicleType.bike);
     Lime testVehicle4 = Lime(id: '5', latitude: 47.5650, longitude: -122.6270, isDisabled: false, isReserved: false, vehicleType: VehicleType.bike); 
