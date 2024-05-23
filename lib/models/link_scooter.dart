@@ -1,6 +1,7 @@
+import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/models/vehicle_types.dart';
 
-class LinkScooter {
+class LinkScooter implements Vehicle {
   String id;
   bool isBookable;
   String vehicleStatus;
@@ -8,8 +9,11 @@ class LinkScooter {
   double batteryCharge;
   double distanceRemaining;
   int timeRemaining;
+  @override
   double latitude;
+  @override
   double longitude;
+  @override
   VehicleType vehicleType;
   
   LinkScooter({required this.isBookable, required this.vehicleStatus, required this.bookingLength, 

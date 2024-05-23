@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:lemun/models/bus_stop.dart';
 import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/models/vehicle_types.dart';
 import 'package:lemun/providers/position_provider.dart';
@@ -35,13 +36,24 @@ class _CompassViewState extends State<CompassView> {
     return math.sqrt(_squared(myLat - widget.latitude) + _squared(myLong - widget.longitude));
   }
 
-  String vehicleTypeAsString(VehicleType type) {
-    switch(type) {
-      case VehicleType.bike: return 'Bike';
-      case VehicleType.scooter: return 'Scooter';
-      case VehicleType.bus: return 'Bus';
+  String vehicleTypeAsString(Vehicle vehicle) {
+    String stringRep = '';
+    if (vehicle is Lime) {
+      stringRep += 'Lime';
+    } else if (vehicle is LinkScooter) {
+      stringRep += 'Link';
+    } else if (vehicle is BusStop) {
+      stringRep += 'Bus Stop';
+    } else {
+      throw Exception('Invalid action');
+    }
+    switch(vehicle.vehicleType) {
+      case VehicleType.bike: stringRep += ' Bike';
+      case VehicleType.scooter: stringRep += ' Scooter';
+      case VehicleType.bus: break; // Do nothing
       case VehicleType.none: throw Exception('Invalid action');
     }
+    return stringRep;
   }
 
   // Returns double representing bearing.
@@ -70,10 +82,13 @@ class _CompassViewState extends State<CompassView> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.vehicle is Lime) {
+      
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('${vehicleTypeAsString(widget.vehicle.vehicleType)}'), // TODO: Add back button
+        title: Text('${vehicleTypeAsString(widget.vehicle)} '), // TODO: Add back button
       ),
       body: Consumer<PositionProvider>(
         builder: (context, positionProvider, child) {

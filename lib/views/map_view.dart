@@ -48,7 +48,7 @@ class _MapViewState extends State<MapView> {
 
     setState(() {
       _currentPosition = LatLng(position.latitude, position.longitude);
-      _mapController.move(_currentPosition, 13.0);
+      _mapController.move(_currentPosition, 15.2);
     });
   }
 
@@ -130,9 +130,10 @@ class _MapViewState extends State<MapView> {
             child: FlutterMap(
               mapController: _mapController,
               options: MapOptions(
+                maxZoom: 19,
                 minZoom: 14,
                 initialCenter:  _currentPosition,
-                initialZoom: 9.2,
+                initialZoom: 15.2,
               ),
               children: [
                 TileLayer(
