@@ -8,8 +8,8 @@ import '../models/tools.dart';
 class DrawingProvider extends ChangeNotifier {
   Drawing? _drawing; // used to create a cached drawing via replay of past actions
   DrawAction _pendingAction = NullAction();
-  Tools _toolSelected = Tools.none;
-  Color _colorSelected = Colors.blue;
+  Tools _toolSelected = Tools.stroke;
+  Color _colorSelected = Colors.red;
 
   final List<DrawAction> _pastActions;
   final List<DrawAction> _futureActions;

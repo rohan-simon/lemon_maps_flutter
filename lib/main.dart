@@ -6,6 +6,7 @@ import 'package:lemun/models/lime.dart';
 import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/models/vehicle_types.dart';
 import 'package:lemun/providers/drawing_provider.dart';
+import 'package:lemun/providers/opacity_provider.dart';
 import 'package:lemun/providers/position_provider.dart';
 import 'package:lemun/providers/scooter_provider.dart';
 import 'package:lemun/views/compass_view.dart';
@@ -45,14 +46,21 @@ class LemunApp extends StatelessWidget {
     Lime testVehicle4 = Lime(id: '5', latitude: 47.5650, longitude: -122.6270, isDisabled: false, isReserved: false, vehicleType: VehicleType.bike); 
     List<Vehicle> testList = _busStops.all; //[testVehicle1, testVehicle2, testVehicle3, testVehicle4]; 
 
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ScooterProvider>(create: (context) => ScooterProvider()),
         ChangeNotifierProvider<PositionProvider>(create: (context) => PositionProvider()),
-        ChangeNotifierProvider<DrawingProvider>(create: (context) => DrawingProvider(width: 0, height: 0 /*TODO: replace values*/)),
+        ChangeNotifierProvider<DrawingProvider>(create: (context) => DrawingProvider(width: width, height: height)),
+        ChangeNotifierProvider<OpacityProvider>(create: (context) => OpacityProvider())
       ],
       child: MaterialApp(
-        home: MapView(vehicles: testList) // TODO: delete before final! Temporary call of compass_view for debugging.
+
+        // home: CompassView(vehicle: testVehicle,) // TODO: delete before final! Temporary call of compass_view for debugging.
+        home: HomePage()
+
       )
     );
   }
