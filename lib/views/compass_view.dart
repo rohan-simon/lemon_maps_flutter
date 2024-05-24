@@ -33,7 +33,14 @@ class _CompassViewState extends State<CompassView> {
   // - double myLat: user's latitude coordinate
   // - double myLong: user's longitude coordinate
   double getDistance(double myLat, double myLong) {
-    return math.sqrt(_squared(myLat - widget.latitude) + _squared(myLong - widget.longitude));
+    return 100000 * math.sqrt(_squared(myLat - widget.latitude) + _squared(myLong - widget.longitude));
+  }
+
+  String distanceToString(double distance) {
+    if (distance > 1000) {
+      return '${(distance / 1000).toStringAsFixed(2)} km';
+    }
+    return '${distance.toStringAsFixed(0)} m';
   }
 
   String vehicleTypeAsString(Vehicle vehicle) {
@@ -56,6 +63,18 @@ class _CompassViewState extends State<CompassView> {
     return stringRep;
   }
 
+  bool _availStatus(Vehicle vehicle) {
+    if (vehicle is BusStop) {
+      return true;
+    } else if (vehicle is LinkScooter) {
+      return vehicle.isBookable;
+    } else if (vehicle is Lime) {
+      return !vehicle.isDisabled && !vehicle.isReserved;
+    } else {
+      throw Exception('Invalid vehicle');
+    }
+  }
+
   // Returns double representing bearing.
   double getBearing(double myLat, double myLong) {
     double dLon = (widget.longitude - myLong);
@@ -76,24 +95,46 @@ class _CompassViewState extends State<CompassView> {
   }
 
   // Helper method; defines a square function. Returns the square of a provided number x.
-  num _squared(num x) {
+  double _squared(double x) {
     return x * x;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.vehicle is Lime) {
-      
-    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text('${vehicleTypeAsString(widget.vehicle)} '), // TODO: Add back button
       ),
       body: Consumer<PositionProvider>(
         builder: (context, positionProvider, child) {
           if (_hasPermissions) {
-            return _buildCompass(positionProvider);
+            String availStatus;
+            
+            if (_availStatus(widget.vehicle)) {
+              availStatus = '🟢 Available';
+            } else {
+              availStatus = '🔴 Unavailable';
+            }
+
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Status: $availStatus',
+                  style: const TextStyle(fontSize: 20),
+                ),
+                const SizedBox(height: 30),
+                _buildCompass(positionProvider),
+                const SizedBox(height: 30),
+                Text(
+                  '${distanceToString(getDistance(positionProvider.latitude, positionProvider.longitude))} away',
+                  style: const TextStyle(fontSize: 20),
+                )
+              ],
+            );
           } else {
             return _buildPermissionSheet();
           }
@@ -131,10 +172,10 @@ class _CompassViewState extends State<CompassView> {
           clipBehavior: Clip.antiAlias,
           elevation: 4.0,
           child: Container(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(1.0),
             alignment: Alignment.center,
             decoration: const BoxDecoration(
-              shape: BoxShape.circle,
+              color: Colors.white,
             ),
             child: Transform.rotate(
               angle: (_degrees2Radians(direction) * -1 + _degrees2Radians(getBearing(positionProvider.latitude, positionProvider.longitude))),
