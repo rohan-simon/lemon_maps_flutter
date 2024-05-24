@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:lemun/models/bus_stop.dart';
 import 'package:lemun/models/bus_stop_db.dart';
 import 'package:lemun/models/lime.dart';
-import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/models/vehicle_types.dart';
 import 'package:lemun/providers/drawing_provider.dart';
 import 'package:lemun/providers/opacity_provider.dart';
@@ -44,7 +43,7 @@ class LemunApp extends StatelessWidget {
     Lime testVehicle2 = Lime(id: '3', latitude: 47.1257, longitude: -122.2930, isDisabled: false, isReserved: false, vehicleType: VehicleType.bike); 
     Lime testVehicle3 = Lime(id: '4', latitude: 47.6101, longitude: -122.2015, isDisabled: false, isReserved: false, vehicleType: VehicleType.bike);
     Lime testVehicle4 = Lime(id: '5', latitude: 47.5650, longitude: -122.6270, isDisabled: false, isReserved: false, vehicleType: VehicleType.bike); 
-    List<Vehicle> testList = _busStops.all; //[testVehicle1, testVehicle2, testVehicle3, testVehicle4]; 
+    List<Lime> testList = [testVehicle1, testVehicle2, testVehicle3, testVehicle4]; 
 
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;

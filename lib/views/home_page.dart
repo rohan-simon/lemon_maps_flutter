@@ -44,17 +44,11 @@ class _HomePageState extends State<HomePage> {
           body: Center(
           child: Stack(
             children: [
-          
               MapView(vehicles: limes),
               opacityProvider.canvas
-
             ],
           ),
         ),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () => _showHideCanvas(context),
-        //   child: Icon(Icons.edit)
-        // ),
         );
       }
     );
@@ -85,20 +79,11 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-    _clear(BuildContext context) {
+  _clear(BuildContext context) {
     final nonListen = Provider.of<DrawingProvider>(context, listen: false);
     nonListen.clear();
   }
 
-  _undo(BuildContext context) {
-    final nonListen = Provider.of<DrawingProvider>(context, listen: false);
-    nonListen.undo();
-  }
-
-  _redo(BuildContext context) {
-    final nonListen = Provider.of<DrawingProvider>(context, listen: false);
-    nonListen.redo();
-  }
   
   _showHideCanvas(BuildContext context) {
     final nonListen = Provider.of<OpacityProvider>(context, listen: false);
@@ -117,9 +102,12 @@ class _HomePageState extends State<HomePage> {
             button: true,
             label: 'Canvas',
             hint: 'allows drawing on the map',
-            child: ElevatedButton(
-              onPressed: () => _showHideCanvas(context),
-              child: const Icon(Icons.edit)
+            child: SizedBox(
+              width: 50,
+              child: ElevatedButton(
+                onPressed: () => _showHideCanvas(context),
+                child: const Icon(Icons.edit)
+              ),
             )
           )
         ]
@@ -127,46 +115,34 @@ class _HomePageState extends State<HomePage> {
       drawer = null;
     } else {
       canvas = Opacity(
-        opacity: 0.5,
+        opacity: 0.99,
         child: DrawArea(width: width, height: height)
       );
       appBar = AppBar(
-          title: const Text('LemÚn'),
+          title: const Text('Draw your path'),
           actions: <Widget>[
             Semantics(
               button: true,
               label: 'Clear',
               hint: 'clears the canvas',
-              child: ElevatedButton(
-                onPressed: () => _clear(context), 
-                child: const Icon(Icons.clear)
-              ),
-            ),
-            Semantics(
-              button: true,
-              label: 'Undo',
-              hint: 'Undoes the last stroke',
-              child: ElevatedButton(
-                onPressed: () => _undo(context), 
-                child: const Icon(Icons.undo)
-              ),
-            ),
-            Semantics(
-              button: true,
-              label: 'Redo',
-              hint: 'Redoes the last stroke',
-              child: ElevatedButton(
-                onPressed: () => _redo(context), 
-                child: const Icon(Icons.redo)
+              child: SizedBox(
+                width: 50,
+                child: ElevatedButton(
+                  onPressed: () => _clear(context), 
+                  child: const Icon(Icons.clear)
+                ),
               ),
             ),
             Semantics(
               button: true,
               label: 'Canvas',
               hint: 'allows drawing on the map',
-              child: ElevatedButton(
-                onPressed: () => _showHideCanvas(context),
-                child: const Icon(Icons.edit)
+              child: SizedBox(
+                width: 50,
+                child: ElevatedButton(
+                  onPressed: () => _showHideCanvas(context),
+                  child: const Icon(Icons.edit)
+                ),
               )
             ),
           ]

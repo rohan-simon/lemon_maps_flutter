@@ -31,6 +31,7 @@ class Palette extends StatelessWidget {
           _buildColorButton('Blue', Colors.blue, drawingProvider),
           _buildColorButton('Purple', Colors.purple, drawingProvider),
           _buildColorButton('White', Colors.white, drawingProvider),
+          _buildColorButton('Black', Colors.black, drawingProvider),
 
         ],
       ),
@@ -83,6 +84,11 @@ class Palette extends StatelessWidget {
   Widget _buildColorButton(String name, Color color,  DrawingProvider provider) {
     bool selected = provider.colorSelected == color;
 
+    var backgroundColor = switch(color) {
+      Colors.black => Colors.grey,
+      _ => Colors.black
+    };
+
     return Semantics(
       button: true,
       selected: selected,
@@ -97,7 +103,7 @@ class Palette extends StatelessWidget {
           children: [
             Stack(
               children: [
-                const Icon(Icons.circle, color: Colors.black, size: 28),
+                Icon(Icons.circle, color: backgroundColor, size: 28),
                 Icon(
                   Icons.circle,
                   color: color,
