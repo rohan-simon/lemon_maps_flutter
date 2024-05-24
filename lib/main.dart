@@ -58,7 +58,7 @@ class LemunApp extends StatelessWidget {
       child: MaterialApp(
 
         // home: CompassView(vehicle: testVehicle,) // TODO: delete before final! Temporary call of compass_view for debugging.
-        home: HomePage()
+        home: HomePage(busStops: _busStops.all)
 
       )
     );

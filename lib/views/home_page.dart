@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lemun/helpers/scooter_checker.dart';
+import 'package:lemun/models/bus_stop.dart';
 import 'package:lemun/models/lime.dart';
 import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/providers/drawing_provider.dart';
@@ -12,8 +13,10 @@ import 'package:lemun/views/map_view.dart';
 
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+
+  HomePage({super.key, required this.busStops});
   bool showCanvas = false;
+  final List<BusStop> busStops;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -35,6 +38,17 @@ class _HomePageState extends State<HomePage> {
           limes = scooterProvider.limes!;
         }
 
+        List<Vehicle> allVehicles = [];
+        for (Vehicle busStop in widget.busStops) { 
+          allVehicles.add(busStop);
+        }
+
+        for (Vehicle lime in limes) {
+          allVehicles.add(lime);
+        }
+
+        
+
 
         // limes = scooterProvider.limes ?? [];
 
@@ -44,7 +58,7 @@ class _HomePageState extends State<HomePage> {
           body: Center(
           child: Stack(
             children: [
-              MapView(vehicles: limes),
+              MapView(vehicles: allVehicles),
               opacityProvider.canvas
             ],
           ),
