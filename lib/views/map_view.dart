@@ -18,7 +18,9 @@ class MapView extends StatefulWidget {
 
 class _MapViewState extends State<MapView> {
   late final MapController _mapController;
-  LatLng _currentPosition = const LatLng(51.509364, -0.128928); // Default to London;
+  // LatLng _currentPosition = const LatLng(51.509364, -0.128928); // Default to London;
+  LatLng _currentPosition = const LatLng(47.653599, -122.305388); // Default to UW
+
 
   @override
   void initState() {
