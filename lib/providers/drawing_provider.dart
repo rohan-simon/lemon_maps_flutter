@@ -123,6 +123,7 @@ class DrawingProvider extends ChangeNotifier {
     }
     _pastActions.add(ClearAction());
     _createCachedDrawing();
+    notifyListeners();
   }
 
   /// Adds the pending stroke to the canvas
