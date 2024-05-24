@@ -125,6 +125,7 @@ class _CompassViewState extends State<CompassView> {
                 Text(
                   'Status: $availStatus',
                   style: const TextStyle(fontSize: 20),
+                  textAlign: TextAlign.left,
                 ),
                 const SizedBox(height: 30),
                 _buildCompass(positionProvider),
@@ -175,7 +176,8 @@ class _CompassViewState extends State<CompassView> {
             padding: const EdgeInsets.all(1.0),
             alignment: Alignment.center,
             decoration: const BoxDecoration(
-              color: Colors.white,
+              shape: BoxShape.circle,
+              color: Color.fromARGB(255, 255, 245, 177),
             ),
             child: Transform.rotate(
               angle: (_degrees2Radians(direction) * -1 + _degrees2Radians(getBearing(positionProvider.latitude, positionProvider.longitude))),
