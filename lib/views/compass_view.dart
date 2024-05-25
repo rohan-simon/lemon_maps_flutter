@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:lemun/models/bus_stop.dart';
 import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/models/vehicle_types.dart';
@@ -208,11 +209,13 @@ class _CompassViewState extends State<CompassView> {
     );
   }
 
-  void _fetchPermissionStatus() {
-    Permission.locationWhenInUse.status.then((status) {
-      if (mounted) {
-        setState(() => _hasPermissions = status == PermissionStatus.granted);
-      }
-    });
+  Future<void> _fetchPermissionStatus() async {
+    // Permission.locationWhenInUse.status.then((status) {
+    //   if (mounted) {
+    //     setState(() => _hasPermissions = status == PermissionStatus.granted);
+    //   }
+    // });
+    var perm = await Geolocator.isLocationServiceEnabled();
+    setState(() => _hasPermissions = perm);
   }
 }
