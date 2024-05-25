@@ -6,8 +6,8 @@ import 'package:geolocator/geolocator.dart';
 // latitude, longitude, and some status information to its
 // consumers.
 class PositionProvider extends ChangeNotifier {
-  double latitude = 0;
-  double longitude = 0;
+  double latitude = 200;
+  double longitude = 200;
   bool _isKnown = false; // True if app knows user's position.
   bool _failedToLoad = false; // True if the app fails to determine user's position. May seem similar to _isKnown, but has slightly different uses.
   late final Timer _timer;
@@ -110,6 +110,6 @@ class PositionProvider extends ChangeNotifier {
 
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
-    return await Geolocator.getCurrentPosition();
+    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 }

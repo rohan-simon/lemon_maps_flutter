@@ -2,60 +2,105 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/models/vehicle_types.dart';
+import 'package:lemun/providers/position_provider.dart';
 import 'package:lemun/views/compass_view.dart';
+import 'package:provider/provider.dart';
 
 class MapView extends StatefulWidget {
   final List<Vehicle> vehicles;
 
-  MapView({super.key, required this.vehicles});
+  const MapView({super.key, required this.vehicles});
 
   @override
-  _MapViewState createState() => _MapViewState();
+  MapViewState createState() => MapViewState();
 }
 
-class _MapViewState extends State<MapView> {
+class MapViewState extends State<MapView> {
   late final MapController _mapController;
-  // LatLng _currentPosition = const LatLng(51.509364, -0.128928); // Default to London;
-  LatLng _currentPosition = const LatLng(47.653599, -122.305388); // Default to UW
-
+  bool _mapReady = false;
+  bool _needsUpdate = true;
+  LatLng _currentPosition = const LatLng(47.6061, -122.3328); // Default to Seattle;
+  final double _initialZoom = 15.2;
+  final Set<VehicleType> _visibleVehicleTypes = {VehicleType.bike, VehicleType.scooter, VehicleType.bus};
 
   @override
   void initState() {
     super.initState();
     _mapController = MapController();
-    _getCurrentLocation();
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   setState(() {
+    //     _isControllerReady = true;
+    //   });
+    //   _updateCurrentLocation();
+    // });
+    
   }
 
-  Future<void> _getCurrentLocation() async {
-    LocationPermission permission;
+  void _onMapReady() {
+    setState(() {
+      _mapReady = true;
+    });
+    _updateCurrentLocation();
+  }
 
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return;
+  @override
+  void dispose() {
+    final positionProvider = Provider.of<PositionProvider>(context, listen: false);
+    positionProvider.removeListener(_updateCurrentLocation);
+    super.dispose();
+  }
+
+  // Future<void> _getCurrentLocation(PositionProvider positionProvider) async {
+  //   LocationPermission permission;
+
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       return;
+  //     }
+  //   }
+
+  //   if (permission == LocationPermission.deniedForever) {
+  //     return;
+  //   }
+
+  //   Position position = await positionProvider._determinePosition()
+
+  //   setState(() {
+  //     _currentPosition = LatLng(position.latitude, position.longitude);
+  //     _mapController.move(_currentPosition, _currentZoom);
+  //   });
+  // }
+
+  // void _updateCurrentLocation(PositionProvider positionProvider) {
+  //   setState(() {
+  //     _currentPosition = LatLng(positionProvider.latitude, positionProvider.longitude);
+  //     _mapController.move(_currentPosition, _currentZoom);
+  //   });
+  // }
+
+  void _updateCurrentLocation() {
+    if (_mapReady) {
+      final positionProvider = Provider.of<PositionProvider>(context, listen: false);
+      if (positionProvider.status) {
+        _currentPosition = LatLng(positionProvider.latitude, positionProvider.longitude);
+        if (_needsUpdate) {
+          _mapController.moveAndRotate(_currentPosition, _initialZoom, 0);
+          setState(() {
+            _needsUpdate = false;
+          });
+        }
       }
     }
-
-    if (permission == LocationPermission.deniedForever) {
-      return;
-    }
-
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-
-    setState(() {
-      _currentPosition = LatLng(position.latitude, position.longitude);
-      _mapController.move(_currentPosition, 15.2);
-    });
   }
 
   List<Marker> createVehicleMarkers(List<Vehicle> vehicles) {
-    return vehicles.map((vehicle) {
+    return vehicles
+        .where((vehicle) => _visibleVehicleTypes.contains(vehicle.vehicleType))
+        .map((vehicle) {
       return Marker(
         width: 80.0,
         height: 80.0,
@@ -73,21 +118,31 @@ class _MapViewState extends State<MapView> {
   Icon getVehicleIcon(VehicleType type) {
     switch (type) {
     case VehicleType.bike:
-      return Icon(Icons.directions_bike, color: Colors.green, size: 40);
+      return const Icon(Icons.directions_bike, color: Colors.green, size: 40);
     case VehicleType.scooter:
-      return Icon(Icons.electric_scooter, color: Colors.orange, size: 40);
+      return const Icon(Icons.electric_scooter, color: Colors.orange, size: 40);
     case VehicleType.bus:
-      return Icon(Icons.directions_bus, color: Colors.blue, size: 40);
+      return const Icon(Icons.directions_bus, color: Colors.blue, size: 40);
     default:
-      return Icon(Icons.location_on, color: Colors.red, size: 40);
+      return const Icon(Icons.location_on, color: Colors.red, size: 40);
     }
+  }
+
+  void _toggleVehicleType(VehicleType type) {
+    setState(() {
+      if (_visibleVehicleTypes.contains(type)) {
+        _visibleVehicleTypes.remove(type);
+      } else {
+        _visibleVehicleTypes.add(type);
+      }
+    });
   }
 
   Widget buildLegend() {
     return Container(
       padding: const EdgeInsets.all(10),
       color: Colors.amber[100],
-      width: double.infinity, // Make the container fit the width of the screen
+      width: double.infinity,
       child: Column(
         children: [
           const Text(
@@ -98,12 +153,30 @@ class _MapViewState extends State<MapView> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              legendItem(Icons.directions_bike, Colors.green, 'Bike'),
-              legendItem(Icons.electric_scooter, Colors.orange, 'Scooter'),
-              legendItem(Icons.directions_bus, Colors.blue, 'Bus'),
               GestureDetector(
                 onTap: () {
-                  _getCurrentLocation();
+                  _toggleVehicleType(VehicleType.bike);
+                },
+                child: legendItem(Icons.directions_bike, Colors.green, 'Bike')
+              ),
+              GestureDetector(
+                onTap: () {
+                  _toggleVehicleType(VehicleType.scooter);
+                },
+                child: legendItem(Icons.electric_scooter, Colors.orange, 'Scooter')
+              ),
+              GestureDetector(
+                onTap: () {
+                  _toggleVehicleType(VehicleType.bus);
+                },
+                child: legendItem(Icons.directions_bus, Colors.blue, 'Bus')
+              ),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _needsUpdate = true;
+                  });
+                  _updateCurrentLocation();
                 },
                 child: legendItem(Icons.catching_pokemon, Colors.red, 'You')
               ),
@@ -129,43 +202,59 @@ class _MapViewState extends State<MapView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            flex: 5,
-            child: FlutterMap(
-              mapController: _mapController,
-              options: MapOptions(
-                maxZoom: 19,
-                minZoom: 14,
-                initialCenter:  _currentPosition,
-                initialZoom: 15.2,
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.example.app',
+      body: Consumer<PositionProvider>(
+        builder: (context, positionProvider, child) {
+          if (!positionProvider.status && !positionProvider.loadFailure) {
+            return Center(child: CircularProgressIndicator());
+          } else if (positionProvider.loadFailure) {
+            return Center(child: Text('Failed to load location'));
+          }
+
+          if (_mapReady) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _updateCurrentLocation();
+            });
+          }
+          return Column(
+            children: [
+              Expanded(
+                flex: 5,
+                child: FlutterMap(
+                  mapController: _mapController,
+                  options: MapOptions(
+                    maxZoom: 19,
+                    minZoom: 14,
+                    initialCenter:  _currentPosition,
+                    initialZoom: _initialZoom,
+                    onMapReady: _onMapReady,
+                  ),
+                  children: [
+                    TileLayer(
+                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'com.example.app',
+                    ),
+                    MarkerLayer(
+                      markers: [
+                        ...createVehicleMarkers(widget.vehicles),
+                        Marker(
+                          width: 80,
+                          height: 80,
+                          point: _currentPosition,
+                          rotate: false,
+                          child: const Icon(Icons.catching_pokemon, color: Colors.red, size: 40),
+                        )                    
+                      ]
+                    )
+                  ],
                 ),
-                MarkerLayer(
-                  markers: [
-                    ...createVehicleMarkers(widget.vehicles),
-                    Marker(
-                      width: 80,
-                      height: 80,
-                      point: _currentPosition,
-                      rotate: false,
-                      child: Icon(Icons.catching_pokemon, color: Colors.red, size: 40),
-                    )                    
-                  ]
-                )
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: buildLegend()
-          )
-        ],
+              ),
+              Expanded(
+                flex: 1,
+                child: buildLegend(),
+              )
+            ],
+          );
+        }
       ),
     );
   }
