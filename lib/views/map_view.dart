@@ -20,8 +20,9 @@ class MapView extends StatefulWidget {
 class MapViewState extends State<MapView> {
   late final MapController _mapController;
   bool _mapReady = false;
+  bool _needsUpdate = true;
   LatLng _currentPosition = const LatLng(47.6061, -122.3328); // Default to Seattle;
-  final double _currentZoom = 15.2;
+  final double _initialZoom = 15.2;
   final Set<VehicleType> _visibleVehicleTypes = {VehicleType.bike, VehicleType.scooter, VehicleType.bus};
 
   @override
@@ -86,7 +87,12 @@ class MapViewState extends State<MapView> {
       final positionProvider = Provider.of<PositionProvider>(context, listen: false);
       if (positionProvider.status) {
         _currentPosition = LatLng(positionProvider.latitude, positionProvider.longitude);
-        _mapController.move(_currentPosition, _currentZoom);
+        if (_needsUpdate) {
+          _mapController.moveAndRotate(_currentPosition, _initialZoom, 0);
+          setState(() {
+            _needsUpdate = false;
+          });
+        }
       }
     }
   }
@@ -167,6 +173,9 @@ class MapViewState extends State<MapView> {
               ),
               GestureDetector(
                 onTap: () {
+                  setState(() {
+                    _needsUpdate = true;
+                  });
                   _updateCurrentLocation();
                 },
                 child: legendItem(Icons.catching_pokemon, Colors.red, 'You')
@@ -202,7 +211,7 @@ class MapViewState extends State<MapView> {
           }
 
           if (_mapReady) {
-            WidgetsBinding.instance!.addPostFrameCallback((_) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
               _updateCurrentLocation();
             });
           }
@@ -216,7 +225,7 @@ class MapViewState extends State<MapView> {
                     maxZoom: 19,
                     minZoom: 14,
                     initialCenter:  _currentPosition,
-                    initialZoom: _currentZoom,
+                    initialZoom: _initialZoom,
                     onMapReady: _onMapReady,
                   ),
                   children: [
