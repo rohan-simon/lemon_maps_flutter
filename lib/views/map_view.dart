@@ -139,21 +139,21 @@ class MapViewState extends State<MapView> {
   }
 
   Widget buildLegend() {
-    var bikeColor = Colors.grey;
-    var scooterColor = Colors.grey;
-    var busColor = Colors.grey;
 
-    if (_visibleVehicleTypes.contains(VehicleType.bike)) {
-      bikeColor = Colors.green;
-    }
+    var bikeColor = switch (_visibleVehicleTypes.contains(VehicleType.bike)) {
+      true => Colors.green,
+      false => Colors.grey
+    };
 
-    if (_visibleVehicleTypes.contains(VehicleType.scooter)) {
-      scooterColor = Colors.orange;
-    }
+    var scooterColor = switch (_visibleVehicleTypes.contains(VehicleType.scooter)) {
+      true => Colors.orange,
+      false => Colors.grey
+    };
 
-    if (_visibleVehicleTypes.contains(VehicleType.bus)) {
-      busColor = Colors.blue;
-    }
+    var busColor = switch (_visibleVehicleTypes.contains(VehicleType.bus)) {
+      true => Colors.blue,
+      false => Colors.grey
+    };
 
     return Container(
       padding: const EdgeInsets.all(10),
