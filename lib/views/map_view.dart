@@ -22,7 +22,7 @@ class MapViewState extends State<MapView> {
   bool _mapReady = false;
   bool _needsUpdate = true;
   LatLng _currentPosition = const LatLng(47.6061, -122.3328); // Default to Seattle;
-  final double _initialZoom = 15.2;
+  final double _defaultZoom = 17;
   final Set<VehicleType> _visibleVehicleTypes = {VehicleType.bike, VehicleType.scooter, VehicleType.bus};
 
   @override
@@ -88,7 +88,7 @@ class MapViewState extends State<MapView> {
       if (positionProvider.status) {
         _currentPosition = LatLng(positionProvider.latitude, positionProvider.longitude);
         if (_needsUpdate) {
-          _mapController.moveAndRotate(_currentPosition, _initialZoom, 0);
+          _mapController.moveAndRotate(_currentPosition, _defaultZoom, 0);
           setState(() {
             _needsUpdate = false;
           });
@@ -241,7 +241,7 @@ class MapViewState extends State<MapView> {
                     maxZoom: 19,
                     minZoom: 14,
                     initialCenter:  _currentPosition,
-                    initialZoom: _initialZoom,
+                    //initialZoom: _defaultZoom,
                     onMapReady: _onMapReady,
                   ),
                   children: [
