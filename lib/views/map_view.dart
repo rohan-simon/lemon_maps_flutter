@@ -139,6 +139,22 @@ class MapViewState extends State<MapView> {
   }
 
   Widget buildLegend() {
+
+    var bikeColor = switch (_visibleVehicleTypes.contains(VehicleType.bike)) {
+      true => Colors.green,
+      false => Colors.grey
+    };
+
+    var scooterColor = switch (_visibleVehicleTypes.contains(VehicleType.scooter)) {
+      true => Colors.orange,
+      false => Colors.grey
+    };
+
+    var busColor = switch (_visibleVehicleTypes.contains(VehicleType.bus)) {
+      true => Colors.blue,
+      false => Colors.grey
+    };
+
     return Container(
       padding: const EdgeInsets.all(10),
       color: Colors.amber[100],
@@ -157,19 +173,19 @@ class MapViewState extends State<MapView> {
                 onTap: () {
                   _toggleVehicleType(VehicleType.bike);
                 },
-                child: legendItem(Icons.directions_bike, Colors.green, 'Bike')
+                child: legendItem(Icons.directions_bike, bikeColor, 'Bike')
               ),
               GestureDetector(
                 onTap: () {
                   _toggleVehicleType(VehicleType.scooter);
                 },
-                child: legendItem(Icons.electric_scooter, Colors.orange, 'Scooter')
+                child: legendItem(Icons.electric_scooter, scooterColor, 'Scooter')
               ),
               GestureDetector(
                 onTap: () {
                   _toggleVehicleType(VehicleType.bus);
                 },
-                child: legendItem(Icons.directions_bus, Colors.blue, 'Bus')
+                child: legendItem(Icons.directions_bus, busColor, 'Bus')
               ),
               GestureDetector(
                 onTap: () {
