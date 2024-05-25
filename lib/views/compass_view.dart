@@ -7,6 +7,7 @@ import 'package:lemun/providers/position_provider.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:text_scroll/text_scroll.dart';
 
 class CompassView extends StatefulWidget {  
   final Vehicle vehicle;
@@ -107,40 +108,102 @@ class _CompassViewState extends State<CompassView> {
         backgroundColor: Colors.white,
         title: Text('${vehicleTypeAsString(widget.vehicle)} '), // TODO: Add back button
       ),
-      body: Consumer<PositionProvider>(
-        builder: (context, positionProvider, child) {
-          if (_hasPermissions) {
-            String availStatus;
-            
-            if (_availStatus(widget.vehicle)) {
-              availStatus = '🟢 Available';
-            } else {
-              availStatus = '🔴 Unavailable';
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Builder(
+            builder:(context) {
+              if (_hasPermissions) {
+                String availStatus;
+                if (widget.vehicle is BusStop) {
+                  String busStopNameAsOverride = (widget.vehicle as BusStop).name;
+                  busStopNameAsOverride = busStopNameAsOverride.substring(1, busStopNameAsOverride.length - 1);
+                  availStatus = busStopNameAsOverride;
+                }
+                else if (_availStatus(widget.vehicle)) {
+                  availStatus = 'Status: 🟢 Available';
+                } else {
+                  availStatus = 'Status: 🔴 Unavailable';
+                }
+                return _buildBusStopName(availStatus);
+              }
+              return _buildBusStopName('⚠️ Location Permissions Disabled');
             }
-
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  'Status: $availStatus',
-                  style: const TextStyle(fontSize: 20),
-                  textAlign: TextAlign.left,
-                ),
-                const SizedBox(height: 30),
-                _buildCompass(positionProvider),
-                const SizedBox(height: 30),
-                Text(
-                  '${distanceToString(getDistance(positionProvider.latitude, positionProvider.longitude))} away',
-                  style: const TextStyle(fontSize: 20),
-                )
-              ],
-            );
-          } else {
-            return _buildPermissionSheet();
-          }
-        },
+          ),
+          Consumer<PositionProvider>(
+            builder: (context, positionProvider, child) {
+              if (_hasPermissions) {
+                return Column(
+                  children: [
+                    
+                    // Expanded(
+                    //   child: Padding(
+                    //     padding: EdgeInsets.only(left: 20, right: 20),
+                    //     child: _buildBusStopName(availStatus)
+                    //     // child: Text(
+                    //     //   availStatus,
+                    //     //   style: const TextStyle(fontSize: 20),
+                    //     //   textAlign: TextAlign.left,
+                    //     // ),
+                    //   ),
+                    // ),
+                    const SizedBox(height: 30),
+                    _buildCompass(positionProvider),
+                    const SizedBox(height: 30),
+                    Text(
+                      '${distanceToString(getDistance(positionProvider.latitude, positionProvider.longitude))} away',
+                      style: const TextStyle(fontSize: 20),
+                    )
+                  ],
+                );
+              } else {
+                return _buildPermissionSheet();
+              }
+            },
+          ),
+        ],
       ),
+    );
+  }
+
+  Widget _buildAvailability(Vehicle vehicle) {
+    bool isAvailable = false;
+    if (vehicle is Lime) {
+      isAvailable = !vehicle.isDisabled && !vehicle.isReserved;
+    } else if (vehicle is LinkScooter) {
+      isAvailable = vehicle.isBookable;
+    } else {
+      throw Exception('Invalid vehicle type: ${vehicleTypeAsString(vehicle)}');
+    }
+    String statusText = isAvailable ? 'Vehicle Status: 🟢 Available' : 'Vehicle Status: 🔴 Unavailable'; 
+
+    return Container(
+      child: Text(
+        statusText
+      )
+    );
+  }
+
+  Widget _buildBusStopName(String name) {
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.all(8),
+      decoration: const BoxDecoration(
+        color:Color.fromARGB(255, 53, 110, 134),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: TextScroll(
+          '$name          ',
+          textAlign: TextAlign.center,
+          velocity: Velocity(pixelsPerSecond: Offset(100, 0)),
+          mode: TextScrollMode.endless,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+          )
+        ),
+      )
     );
   }
 
