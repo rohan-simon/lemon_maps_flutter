@@ -23,6 +23,34 @@ class CompassView extends StatefulWidget {
 class _CompassViewState extends State<CompassView> {
   bool _hasPermissions = false;
 
+  Color _getAccentColor(Vehicle vehicle) {
+    if (vehicle is Lime) {
+      return const Color.fromARGB(255, 100, 218, 65);
+    } else if (vehicle is LinkScooter) {
+      return const Color.fromARGB(255, 234, 254, 82);
+    } else if (vehicle is BusStop) {
+      return const Color.fromARGB(255, 53, 110, 134);
+    }
+    return Colors.white;
+  }
+
+  Color _getTextColor(Vehicle vehicle) {
+    if (vehicle is Lime || vehicle is LinkScooter) {
+      return Colors.black;
+    }
+    return Colors.white;
+  }
+
+  IconData _getIcon(Vehicle vehicle) {
+    switch (vehicle.vehicleType) {
+      case VehicleType.bike: return Icons.directions_bike;
+      case VehicleType.scooter: return Icons.electric_scooter;
+      case VehicleType.bus: return Icons.directions_bus;
+      default: return Icons.help;
+    }
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -102,11 +130,24 @@ class _CompassViewState extends State<CompassView> {
 
   @override
   Widget build(BuildContext context) {
+    Color accentColor = _getAccentColor(widget.vehicle);
+    Color textColor = _getTextColor(widget.vehicle);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text('${vehicleTypeAsString(widget.vehicle)} '), // TODO: Add back button
+        iconTheme: IconThemeData(
+          color: textColor,
+        ),
+        backgroundColor: accentColor,
+        title: Row(
+          children: [
+            Text(
+              '${vehicleTypeAsString(widget.vehicle)} ',
+              style: TextStyle(color: textColor),
+            ),
+            Icon(_getIcon(widget.vehicle), color: textColor)
+          ],
+        ),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -148,7 +189,7 @@ class _CompassViewState extends State<CompassView> {
                     //   ),
                     // ),
                     const SizedBox(height: 30),
-                    _buildCompass(positionProvider),
+                    _buildCompass(positionProvider, accentColor),
                     const SizedBox(height: 30),
                     Text(
                       '${distanceToString(getDistance(positionProvider.latitude, positionProvider.longitude))} away',
@@ -189,7 +230,7 @@ class _CompassViewState extends State<CompassView> {
       alignment: Alignment.center,
       padding: const EdgeInsets.all(8),
       decoration: const BoxDecoration(
-        color:Color.fromARGB(255, 53, 110, 134),
+        color:Color.fromARGB(255, 69, 141, 172),
       ),
       child: Padding(
         padding: const EdgeInsets.all(10),
@@ -208,7 +249,7 @@ class _CompassViewState extends State<CompassView> {
   }
 
   // Builds compass
-  Widget _buildCompass(PositionProvider positionProvider) {
+  Widget _buildCompass(PositionProvider positionProvider, Color compassColor) {
     return StreamBuilder<CompassEvent>(
       stream: FlutterCompass.events,
       builder: (context, snapshot) {
@@ -238,9 +279,9 @@ class _CompassViewState extends State<CompassView> {
           child: Container(
             padding: const EdgeInsets.all(1.0),
             alignment: Alignment.center,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Color.fromARGB(255, 255, 245, 177),
+              color: Color.fromARGB(255, 255, 243, 19),
             ),
             child: Transform.rotate(
               angle: (_degrees2Radians(direction) * -1 + _degrees2Radians(getBearing(positionProvider.latitude, positionProvider.longitude))),
