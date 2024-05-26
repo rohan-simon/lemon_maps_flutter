@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:lemun/models/bus_stop.dart';
 import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/models/vehicle_types.dart';
@@ -97,7 +96,7 @@ class _CompassViewState extends State<CompassView> {
     if (vehicle is BusStop) {
       return true;
     } else if (vehicle is LinkScooter) {
-      return vehicle.vehicleStatus == "available";
+      return vehicle.isBookable;
     } else if (vehicle is Lime) {
       return !vehicle.isDisabled && !vehicle.isReserved;
     } else {
@@ -183,13 +182,13 @@ class _CompassViewState extends State<CompassView> {
                     _buildCompass(positionProvider, accentColor),
                     const SizedBox(height: 10),
                     Padding(
-                      padding: EdgeInsets.all(25),
+                      padding: const EdgeInsets.all(25),
                       child: Container(
                         alignment: Alignment.center,
-                        padding: EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 10),
+                        padding: const EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 10),
                         decoration: BoxDecoration(
                           color: Color.fromARGB(255, math.min(accentColor.red + 16, 255), math.min(accentColor.green + 31, 255), math.min(accentColor.blue + 38, 255)),
-                          borderRadius: BorderRadius.all(Radius.circular(50))
+                          borderRadius: const BorderRadius.all(Radius.circular(50))
                         ),
                         child: Text(
                           '~${distanceToString(getDistance(positionProvider.latitude, positionProvider.longitude))} away',
@@ -233,7 +232,7 @@ class _CompassViewState extends State<CompassView> {
   }
 
   Widget _buildStatus(Vehicle vehicle, DateTime updatedAt) {
-    Color accentColor = Color.fromARGB(255, 248, 221, 86);
+    Color accentColor = const Color.fromARGB(255, 248, 221, 86);
     bool isAvailable = _availStatus(vehicle);
     String statusText = isAvailable ? 'Status: Available ' : 'Status: Unavailable ';
     IconData icon = isAvailable ? Icons.check_circle_rounded : Icons.remove_circle_rounded;
@@ -348,14 +347,11 @@ class _CompassViewState extends State<CompassView> {
     );
   }
 
-  Future<void> _fetchPermissionStatus() async {
-    // Permission.locationWhenInUse.status.then((status) {
-    //   if (mounted) {
-    //     setState(() => _hasPermissions = status == PermissionStatus.granted);
-    //   }
-    // });
-    var perm = await Geolocator.isLocationServiceEnabled();
-    setState(() => _hasPermissions = perm);
+  void _fetchPermissionStatus() {
+    Permission.locationWhenInUse.status.then((status) {
+      if (mounted) {
+        setState(() => _hasPermissions = status == PermissionStatus.granted);
+      }
+    });
   }
-
 }
