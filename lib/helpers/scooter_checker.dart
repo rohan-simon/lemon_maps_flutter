@@ -7,8 +7,8 @@ import 'package:lemun/providers/scooter_provider.dart';
 class ScooterChecker {
 
   final ScooterProvider scooterProvider;
-  var _latitude = '49.4404395';
-  var _longitude = '11.0760811';
+  var _latitude = 49.4404395;
+  var _longitude = 11.0760811;
   var _city = 'seattle';
 
   // ScooterChecker();
@@ -22,17 +22,19 @@ class ScooterChecker {
   fetchLinkScooter() async {
     var client = http.Client();
     try {
+      var latitude = _latitude.toString();
+      var longitude = _longitude.toString();
 
       // connect to APIs
       final linkResponse = await client.get(
-        Uri.parse('https://vehicles.linkyour.city/reservation-api/local-vehicles/?format=json&latitude=$_latitude&longitude=$_longitude')
+        Uri.parse('https://vehicles.linkyour.city/reservation-api/local-vehicles/?format=json&latitude=$latitude&longitude=$longitude')
       );
       final linkParsed = (jsonDecode(linkResponse.body));
 
-      final limeResponse = await client.get(
+      var limeResponse = await client.get(
         Uri.parse('https://data.lime.bike/api/partners/v1/gbfs/$_city/free_bike_status')
       );
-      final limeParsed = (jsonDecode(limeResponse.body));
+      var limeParsed = (jsonDecode(limeResponse.body));
 
       // Convert jsons to dart objects
       final List<LinkScooter> links = (linkParsed['vehicles'] as List)
@@ -40,6 +42,14 @@ class ScooterChecker {
 
       final List<Lime> limes = (limeParsed['data']?['bikes'] as List)
         .map((vehicle) => Lime.fromJson(vehicle)).toList();
+
+      // add more scooters from lime?
+      // limeResponse = await client.get(
+      //   Uri.parse('https://data.lime.bike/api/partners/v1/gbfs/san_francisco/free_bike_status')
+      // );
+      // limeParsed = (jsonDecode(limeResponse.body));
+      // limes.addAll(((limeParsed['data']?['bikes'] as List)
+      //   .map((vehicle) => Lime.fromJson(vehicle)).toList()));
 
       // Update scooter provider
       scooterProvider.updateScooters(links, limes);

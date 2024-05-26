@@ -69,7 +69,7 @@ class _CompassViewState extends State<CompassView> {
     if (vehicle is BusStop) {
       return true;
     } else if (vehicle is LinkScooter) {
-      return vehicle.isBookable;
+      return vehicle.vehicleStatus == "available";
     } else if (vehicle is Lime) {
       return !vehicle.isDisabled && !vehicle.isReserved;
     } else {

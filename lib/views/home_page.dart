@@ -1,10 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:lemun/helpers/scooter_checker.dart';
 import 'package:lemun/models/bus_stop.dart';
 import 'package:lemun/models/lime.dart';
 import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/providers/drawing_provider.dart';
 import 'package:lemun/providers/opacity_provider.dart';
+import 'package:lemun/providers/position_provider.dart';
 import 'package:lemun/views/draw_area.dart';
 import 'package:lemun/views/palette.dart';
 import 'package:provider/provider.dart';
@@ -23,20 +27,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late final Timer _checkerTimer;
+  late final ScooterChecker _sc;
 
   @override
   Widget build(BuildContext context) {
 
-    return Consumer2<ScooterProvider, OpacityProvider>(
-      builder: (context, scooterProvider, opacityProvider, child) {
+    return Consumer3<ScooterProvider, OpacityProvider, PositionProvider>(
+      builder: (context, scooterProvider, opacityProvider, positionProvider, child) {
 
-        List<Text> coords = [Text('no coords yet')];
+        // List<Text> coords = [Text('no coords yet')];
 
-        List<Vehicle> limes = [];
-        if (scooterProvider.limes != null) {
-          coords = scooterProvider.links!.map((link) => Text('latitude: ${link.latitude}, longitude: ${link.longitude}')).toList();
-          limes = scooterProvider.limes!;
-        }
+        List<Vehicle> limes = scooterProvider.limes ?? [];
+        List<Vehicle> links = scooterProvider.links ?? [];
 
         List<Vehicle> allVehicles = [];
         for (Vehicle busStop in widget.busStops) { 
@@ -47,8 +50,9 @@ class _HomePageState extends State<HomePage> {
           allVehicles.add(lime);
         }
 
-        
-
+        for (Vehicle link in links) {
+          allVehicles.add(link);
+        }
 
         // limes = scooterProvider.limes ?? [];
 
@@ -73,25 +77,26 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     final singleUseScooterProvider = Provider.of<ScooterProvider>(context, listen: false);
-    final ScooterChecker sc = ScooterChecker(singleUseScooterProvider);
+    _sc = ScooterChecker(singleUseScooterProvider);
     final singleUseOpacityProvider = Provider.of<OpacityProvider>(context, listen: false);
-    singleUseOpacityProvider.appBar = AppBar(
-      title: const Text('LemÚn'),
-      actions: <Widget>[
-        Semantics(
-          button: true,
-          label: 'Canvas',
-          hint: 'allows drawing on the map',
-          child: ElevatedButton(
-            onPressed: () => _showHideCanvas(context),
-            child: const Icon(Icons.edit)
-          )
-        )
-      ]
-    );
-    sc.fetchLinkScooter();
-  }
+    final singleUsePositionProver = Provider.of<PositionProvider>(context, listen: false);
+    singleUseOpacityProvider.appBar = _buildAppBar(context, true);
+    _sc.updateLocation(latitude: singleUsePositionProver.latitude, longitude: singleUsePositionProver.longitude);
+    _sc.fetchLinkScooter();
 
+    _checkerTimer = Timer.periodic(
+      const Duration(seconds: 60), 
+      (timer) { 
+        _sc.updateLocation(latitude: singleUsePositionProver.latitude, longitude: singleUsePositionProver.longitude);
+        _sc.fetchLinkScooter();
+      }
+    );
+  }
+  @override 
+  dispose(){
+    super.dispose();
+    _checkerTimer.cancel();
+  }
 
   _clear(BuildContext context) {
     final nonListen = Provider.of<DrawingProvider>(context, listen: false);
@@ -104,12 +109,31 @@ class _HomePageState extends State<HomePage> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     Opacity canvas;
-    AppBar? appBar;
+    AppBar appBar = _buildAppBar(context, nonListen.showCanvas);
     Drawer? drawer;
 
     if (nonListen.showCanvas) {
       canvas = const Opacity(opacity: 0.0);
-      appBar = AppBar(
+      drawer = null;
+    } else {
+      canvas = Opacity(
+        opacity: 0.99,
+        child: DrawArea(width: width, height: height)
+      );
+      drawer = Drawer(
+        child: Palette(context),
+      );
+    }
+
+    nonListen.updateCanvas(canvas, !nonListen.showCanvas, appBar, drawer);
+    
+  }
+
+  // Build the appbar based on whether the canvas should be on or off
+  AppBar _buildAppBar(BuildContext context, bool showCanvas) {
+    // Default look, 1 button to show the canvas
+    if (showCanvas) {
+      return AppBar(
         title: const Text('LemÚn'),
         actions: <Widget>[
           Semantics(
@@ -126,13 +150,10 @@ class _HomePageState extends State<HomePage> {
           )
         ]
       );
-      drawer = null;
-    } else {
-      canvas = Opacity(
-        opacity: 0.99,
-        child: DrawArea(width: width, height: height)
-      );
-      appBar = AppBar(
+    }
+
+    // Button to display the canvas has been tapped. Show button to exit, undo, and color drawer.
+    return AppBar(
           title: const Text('Draw your path'),
           actions: <Widget>[
             Semantics(
@@ -161,12 +182,5 @@ class _HomePageState extends State<HomePage> {
             ),
           ]
         );
-        drawer = Drawer(
-          child: Palette(context),
-        );
-    }
-
-    nonListen.updateCanvas(canvas, !nonListen.showCanvas, appBar, drawer);
-    
   }
 }
