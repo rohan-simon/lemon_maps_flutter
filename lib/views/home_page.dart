@@ -9,6 +9,7 @@ import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/providers/drawing_provider.dart';
 import 'package:lemun/providers/opacity_provider.dart';
 import 'package:lemun/providers/position_provider.dart';
+import 'package:lemun/views/city_selector.dart';
 import 'package:lemun/views/draw_area.dart';
 import 'package:lemun/views/palette.dart';
 import 'package:provider/provider.dart';
@@ -81,14 +82,21 @@ class _HomePageState extends State<HomePage> {
     final singleUseOpacityProvider = Provider.of<OpacityProvider>(context, listen: false);
     final singleUsePositionProver = Provider.of<PositionProvider>(context, listen: false);
     singleUseOpacityProvider.appBar = _buildAppBar(context, true);
+    singleUseOpacityProvider.drawer = Drawer(
+      child: CitySelector(context)
+    );
+    // get initial scooter and bike list
     _sc.updateLocation(latitude: singleUsePositionProver.latitude, longitude: singleUsePositionProver.longitude);
     _sc.fetchLinkScooter();
+    _sc.fetchLime();
 
+    // update bike and scooter list periodically so it is up to date
     _checkerTimer = Timer.periodic(
       const Duration(seconds: 60), 
       (timer) { 
         _sc.updateLocation(latitude: singleUsePositionProver.latitude, longitude: singleUsePositionProver.longitude);
         _sc.fetchLinkScooter();
+        _sc.fetchLime();
       }
     );
   }
@@ -103,7 +111,6 @@ class _HomePageState extends State<HomePage> {
     nonListen.clear();
   }
 
-  
   _showHideCanvas(BuildContext context) {
     final nonListen = Provider.of<OpacityProvider>(context, listen: false);
     double width = MediaQuery.of(context).size.width;
@@ -114,7 +121,9 @@ class _HomePageState extends State<HomePage> {
 
     if (nonListen.showCanvas) {
       canvas = const Opacity(opacity: 0.0);
-      drawer = null;
+      drawer = Drawer(
+        child: CitySelector(context)
+      );
     } else {
       canvas = Opacity(
         opacity: 0.99,
@@ -124,9 +133,7 @@ class _HomePageState extends State<HomePage> {
         child: Palette(context),
       );
     }
-
     nonListen.updateCanvas(canvas, !nonListen.showCanvas, appBar, drawer);
-    
   }
 
   // Build the appbar based on whether the canvas should be on or off
