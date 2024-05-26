@@ -105,7 +105,7 @@ class _CompassViewState extends State<CompassView> {
   }
 
   // Returns double representing bearing.
-  double getBearing(double myLat, double myLong) {
+  double _getBearing(double myLat, double myLong) {
     double dLon = (widget.longitude - myLong);
     
     double x = math.cos(_degrees2Radians(widget.latitude)) * math.sin(_degrees2Radians(dLon));
@@ -130,11 +130,14 @@ class _CompassViewState extends State<CompassView> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime updatedAt = DateTime.now();
     Color accentColor = _getAccentColor(widget.vehicle);
     Color textColor = _getTextColor(widget.vehicle);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 4,
+        shadowColor: Colors.black,
         iconTheme: IconThemeData(
           color: textColor,
         ),
@@ -155,18 +158,16 @@ class _CompassViewState extends State<CompassView> {
           Builder(
             builder:(context) {
               if (_hasPermissions) {
-                String availStatus;
+                String busStopNameAsOverride;
                 if (widget.vehicle is BusStop) {
-                  String busStopNameAsOverride = (widget.vehicle as BusStop).name;
+                  busStopNameAsOverride = (widget.vehicle as BusStop).name;
                   busStopNameAsOverride = busStopNameAsOverride.substring(1, busStopNameAsOverride.length - 1);
-                  availStatus = busStopNameAsOverride;
-                }
-                else if (_availStatus(widget.vehicle)) {
-                  availStatus = 'Status: 🟢 Available';
+                  return _buildBusStopName(busStopNameAsOverride);
+                } else if (widget.vehicle is Lime || widget.vehicle is LinkScooter) {
+                  return _buildStatus(widget.vehicle, updatedAt);
                 } else {
-                  availStatus = 'Status: 🔴 Unavailable';
+                  throw Exception("Invalid vehicle type: ${widget.vehicle}");
                 }
-                return _buildBusStopName(availStatus);
               }
               return _buildBusStopName('⚠️ Location Permissions Disabled');
             }
@@ -175,25 +176,25 @@ class _CompassViewState extends State<CompassView> {
             builder: (context, positionProvider, child) {
               if (_hasPermissions) {
                 return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    
-                    // Expanded(
-                    //   child: Padding(
-                    //     padding: EdgeInsets.only(left: 20, right: 20),
-                    //     child: _buildBusStopName(availStatus)
-                    //     // child: Text(
-                    //     //   availStatus,
-                    //     //   style: const TextStyle(fontSize: 20),
-                    //     //   textAlign: TextAlign.left,
-                    //     // ),
-                    //   ),
-                    // ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 50),
                     _buildCompass(positionProvider, accentColor),
-                    const SizedBox(height: 30),
-                    Text(
-                      '${distanceToString(getDistance(positionProvider.latitude, positionProvider.longitude))} away',
-                      style: const TextStyle(fontSize: 20),
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: EdgeInsets.all(25),
+                      child: Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 10),
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, math.min(accentColor.red + 16, 255), math.min(accentColor.green + 31, 255), math.min(accentColor.blue + 38, 255)),
+                          borderRadius: BorderRadius.all(Radius.circular(50))
+                        ),
+                        child: Text(
+                          '~${distanceToString(getDistance(positionProvider.latitude, positionProvider.longitude))} away',
+                          style: TextStyle(fontSize: 20, color: textColor),
+                        ),
+                      ),
                     )
                   ],
                 );
@@ -204,24 +205,6 @@ class _CompassViewState extends State<CompassView> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildAvailability(Vehicle vehicle) {
-    bool isAvailable = false;
-    if (vehicle is Lime) {
-      isAvailable = !vehicle.isDisabled && !vehicle.isReserved;
-    } else if (vehicle is LinkScooter) {
-      isAvailable = vehicle.isBookable;
-    } else {
-      throw Exception('Invalid vehicle type: ${vehicleTypeAsString(vehicle)}');
-    }
-    String statusText = isAvailable ? 'Vehicle Status: 🟢 Available' : 'Vehicle Status: 🔴 Unavailable'; 
-
-    return Container(
-      child: Text(
-        statusText
-      )
     );
   }
 
@@ -237,7 +220,7 @@ class _CompassViewState extends State<CompassView> {
         child: TextScroll(
           '$name          ',
           textAlign: TextAlign.center,
-          velocity: Velocity(pixelsPerSecond: Offset(100, 0)),
+          velocity: const Velocity(pixelsPerSecond: Offset(100, 0)),
           mode: TextScrollMode.endless,
           style: const TextStyle(
             color: Colors.white,
@@ -245,6 +228,71 @@ class _CompassViewState extends State<CompassView> {
           )
         ),
       )
+    );
+  }
+
+  Widget _buildStatus(Vehicle vehicle, DateTime updatedAt) {
+    Color accentColor = Color.fromARGB(255, 248, 221, 86);
+    bool isAvailable = _availStatus(vehicle);
+    String statusText = isAvailable ? 'Status: Available ' : 'Status: Unavailable ';
+    IconData icon = isAvailable ? Icons.check_circle_rounded : Icons.remove_circle_rounded;
+    Color iconColor = isAvailable ? Colors.green : Colors.red;
+    String minute = updatedAt.minute.toString();
+    if (updatedAt.minute < 10) {
+      minute = '0$minute';
+    }
+    
+    return Padding(
+      padding: const EdgeInsets.only(right: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: accentColor,
+              borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+              boxShadow: const [BoxShadow(
+                color: Color.fromARGB(255, 167, 167, 167),
+                offset: Offset(2.0, 2.0),
+                blurRadius: 4.0,
+                spreadRadius: 1.0,
+              )],
+            ),
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      statusText,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      )
+                    ),
+                    Icon(
+                      icon,
+                      color: iconColor,
+                    )
+                  ],
+                ),
+                Text(
+                  'Last updated ${updatedAt.hour}:$minute',
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 59, 59, 59),
+                  )
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -272,22 +320,9 @@ class _CompassViewState extends State<CompassView> {
             child: Text("Device does not have sensors !"),
           );
         }
-        return Material(
-          shape: const CircleBorder(),
-          clipBehavior: Clip.antiAlias,
-          elevation: 4.0,
-          child: Container(
-            padding: const EdgeInsets.all(1.0),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color.fromARGB(255, 255, 243, 19),
-            ),
-            child: Transform.rotate(
-              angle: (_degrees2Radians(direction) * -1 + _degrees2Radians(getBearing(positionProvider.latitude, positionProvider.longitude))),
-              child: const Image(image: AssetImage('lib/assets/lemun_compass.png'))
-            ),
-          ),
+        return Transform.rotate(
+          angle: (_degrees2Radians(direction) * -1 + _degrees2Radians(_getBearing(positionProvider.latitude, positionProvider.longitude))),
+          child: const Image(image: AssetImage('lib/assets/lemun_compass.png'))
         );
       },
     );

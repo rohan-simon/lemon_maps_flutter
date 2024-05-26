@@ -56,7 +56,7 @@ class LemunApp extends StatelessWidget {
         ChangeNotifierProvider<OpacityProvider>(create: (context) => OpacityProvider())
       ],
       child: MaterialApp(
-
+        debugShowCheckedModeBanner: false, 
         // home: CompassView(vehicle: testVehicle,) // TODO: delete before final! Temporary call of compass_view for debugging.
         home: HomePage(busStops: _busStops.all)
 
