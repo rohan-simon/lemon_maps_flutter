@@ -141,6 +141,9 @@ class _HomePageState extends State<HomePage> {
     // Default look, 1 button to show the canvas
     if (showCanvas) {
       return AppBar(
+        backgroundColor: Color.fromARGB(255, 248, 221, 86),
+        elevation: 4,
+        shadowColor: Colors.black,
         title: const Text('LemÚn'),
         actions: <Widget>[
           Semantics(
@@ -161,6 +164,8 @@ class _HomePageState extends State<HomePage> {
 
     // Button to display the canvas has been tapped. Show button to exit, undo, and color drawer.
     return AppBar(
+          backgroundColor: Color.fromARGB(255, 248, 221, 86),
+          elevation: 4,
           title: const Text('Draw your path'),
           actions: <Widget>[
             Semantics(
