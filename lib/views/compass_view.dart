@@ -205,11 +205,11 @@ class _CompassViewState extends State<CompassView> {
           Builder(
             builder:(context) {
               if (_hasPermissions) {
-                if (widget.vehicle is BusStop) { // Builds bus stop name widget if vehicle type is a bus stop
+                if (widget.vehicle is BusStop) { // Builds bus stop name widget if vehicle type is a bus stop...
                   String busStopName = (widget.vehicle as BusStop).name;
                   busStopName = busStopName.substring(1, busStopName.length - 1);
                   return _buildBusStopName(busStopName);
-                } else if (widget.vehicle is Lime || widget.vehicle is LinkScooter) { // 
+                } else if (widget.vehicle is Lime || widget.vehicle is LinkScooter) { // ... otherwise builds a status widget
                   return _buildStatus(widget.vehicle, updatedAt);
                 } else {
                   throw Exception("Invalid vehicle type: ${widget.vehicle}"); // Case should not be possible
@@ -218,6 +218,7 @@ class _CompassViewState extends State<CompassView> {
               return _buildBusStopName('⚠️ Location Permissions Disabled'); // Case where permissions are disabled (should not be possible)
             }
           ),
+          // Compass and distance text
           Consumer<PositionProvider>(
             builder: (context, positionProvider, child) {
               if (_hasPermissions) {
@@ -225,15 +226,19 @@ class _CompassViewState extends State<CompassView> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 50),
-                    _buildCompass(positionProvider, accentColor),
+                    _buildCompass(positionProvider, accentColor), // Compass
                     const SizedBox(height: 10),
+                    // Distance text
                     Padding(
                       padding: const EdgeInsets.all(25),
                       child: Container(
                         alignment: Alignment.center,
                         padding: const EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 10),
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(255, math.min(accentColor.red + 16, 255), math.min(accentColor.green + 31, 255), math.min(accentColor.blue + 38, 255)),
+                          color: Color.fromARGB(255, 
+                                                math.min(accentColor.red + 16, 255), 
+                                                math.min(accentColor.green + 31, 255),
+                                                math.min(accentColor.blue + 38, 255)),
                           borderRadius: const BorderRadius.all(Radius.circular(50))
                         ),
                         child: Text(
@@ -245,6 +250,7 @@ class _CompassViewState extends State<CompassView> {
                   ],
                 );
               } else {
+                // Case where permissions are not enabled; should not be possible.
                 return _buildPermissionSheet();
               }
             },
