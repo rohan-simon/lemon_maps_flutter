@@ -183,7 +183,7 @@ class MapViewState extends State<MapView> {
                   onTap: () {
                     _toggleVehicleType(VehicleType.bus);
                   },
-                  child: legendItem(Icons.directions_bus, busColor, 'Bus')
+                  child: legendItem(Icons.directions_bus, busColor, 'Bus Stop')
                 ),
               ),
               Semantics(

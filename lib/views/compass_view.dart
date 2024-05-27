@@ -132,7 +132,12 @@ class _CompassViewState extends State<CompassView> {
     return x * x;
   }
 
-  Color _getAccentColor(Vehicle vehicle) {
+  // Generates a UI accent colour according to vehicle's operator/maintainer.
+  // Colours are generally associated with 'official colours' of whatever
+  // service is operating/maintaining the vehicle (e.g. Lime vehicles are a 
+  // lime green colour). No parameters.
+  Color _getAccentColor() {
+    final vehicle = widget.vehicle;
     if (vehicle is Lime) {
       return const Color.fromARGB(255, 100, 218, 65);
     } else if (vehicle is LinkScooter) {
@@ -143,15 +148,21 @@ class _CompassViewState extends State<CompassView> {
     return Colors.white;
   }
 
-  Color _getTextColor(Vehicle vehicle) {
+  // Generates a UI text colour according to vehicle's operator/maintainer.
+  // Colour choices are white or black and are chosen based on contrast.
+  // No parameters.
+  Color _getTextColor() {
+    final vehicle = widget.vehicle;
     if (vehicle is Lime || vehicle is LinkScooter) {
       return Colors.black;
     }
     return Colors.white;
   }
 
-  IconData _getIcon(Vehicle vehicle) {
-    switch (vehicle.vehicleType) {
+  // Returns an icon corresponding to the vehicle's type.
+  // No parameters.
+  IconData _getIcon() {
+    switch (widget.vehicle.vehicleType) {
       case VehicleType.bike: return Icons.directions_bike;
       case VehicleType.scooter: return Icons.electric_scooter;
       case VehicleType.bus: return Icons.directions_bus;
@@ -159,14 +170,15 @@ class _CompassViewState extends State<CompassView> {
     }
   }
 
-
+  // Builds the UI from the provided context.
   @override
   Widget build(BuildContext context) {
     DateTime updatedAt = DateTime.now();
-    Color accentColor = _getAccentColor(widget.vehicle);
-    Color textColor = _getTextColor(widget.vehicle);
+    Color accentColor = _getAccentColor();
+    Color textColor = _getTextColor();
     return Scaffold(
       backgroundColor: Colors.white,
+      // App bar
       appBar: AppBar(
         elevation: 4,
         shadowColor: Colors.black,
@@ -180,28 +192,30 @@ class _CompassViewState extends State<CompassView> {
               '${_vehicleTypeAsString()} ',
               style: TextStyle(color: textColor),
             ),
-            Icon(_getIcon(widget.vehicle), color: textColor)
+            Icon(_getIcon(), color: textColor)
           ],
         ),
       ),
+
+      // Body
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Status or bus stop name at top of body (depends on vehicle)
           Builder(
             builder:(context) {
               if (_hasPermissions) {
-                String busStopNameAsOverride;
-                if (widget.vehicle is BusStop) {
-                  busStopNameAsOverride = (widget.vehicle as BusStop).name;
-                  busStopNameAsOverride = busStopNameAsOverride.substring(1, busStopNameAsOverride.length - 1);
-                  return _buildBusStopName(busStopNameAsOverride);
-                } else if (widget.vehicle is Lime || widget.vehicle is LinkScooter) {
+                if (widget.vehicle is BusStop) { // Builds bus stop name widget if vehicle type is a bus stop
+                  String busStopName = (widget.vehicle as BusStop).name;
+                  busStopName = busStopName.substring(1, busStopName.length - 1);
+                  return _buildBusStopName(busStopName);
+                } else if (widget.vehicle is Lime || widget.vehicle is LinkScooter) { // 
                   return _buildStatus(widget.vehicle, updatedAt);
                 } else {
-                  throw Exception("Invalid vehicle type: ${widget.vehicle}");
+                  throw Exception("Invalid vehicle type: ${widget.vehicle}"); // Case should not be possible
                 }
               }
-              return _buildBusStopName('⚠️ Location Permissions Disabled');
+              return _buildBusStopName('⚠️ Location Permissions Disabled'); // Case where permissions are disabled (should not be possible)
             }
           ),
           Consumer<PositionProvider>(
