@@ -155,11 +155,14 @@ class _HomePageState extends State<HomePage> {
             button: true,
             label: 'Canvas',
             hint: 'allows drawing on the map',
-            child: SizedBox(
-              width: 50,
-              child: ElevatedButton(
-                onPressed: () => _showHideCanvas(context),
-                child: const Icon(Icons.edit)
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: SizedBox(
+                width: 50,
+                child: ElevatedButton(
+                  onPressed: () => _showHideCanvas(context),
+                  child: const Icon(Icons.edit)
+                ),
               ),
             )
           )
@@ -178,22 +181,26 @@ class _HomePageState extends State<HomePage> {
               label: 'Clear',
               hint: 'clears the canvas',
               child: SizedBox(
-                width: 50,
-                child: ElevatedButton(
-                  onPressed: () => _clear(context), 
-                  child: const Icon(Icons.clear)
+                  width: 50,
+                  child: ElevatedButton(
+                    onPressed: () => _clear(context), 
+                    child: const Icon(Icons.clear)
+                  ),
                 ),
               ),
-            ),
+
             Semantics(
               button: true,
               label: 'Canvas',
               hint: 'allows drawing on the map',
-              child: SizedBox(
-                width: 50,
-                child: ElevatedButton(
-                  onPressed: () => _showHideCanvas(context),
-                  child: const Icon(Icons.edit)
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: SizedBox(
+                  width: 50,
+                  child: ElevatedButton(
+                    onPressed: () => _showHideCanvas(context),
+                    child: const Icon(Icons.edit)
+                  ),
                 ),
               )
             ),
