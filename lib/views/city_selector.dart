@@ -19,7 +19,6 @@ class CitySelector extends StatelessWidget {
           ),
 
           _buildHeader('United States'),
-          _buildCityButton('Baltimore', Cities.baltimore, scooterProvider),
           _buildCityButton('Cleveland', Cities.cleveland, scooterProvider),
           _buildCityButton('Detroit', Cities.detroit, scooterProvider),
           _buildCityButton('Grand Rapids', Cities.grand_rapids, scooterProvider),
@@ -69,14 +68,6 @@ class CitySelector extends StatelessWidget {
           _buildHeader('Italy'),
           _buildCityButton('Rome', Cities.rome, scooterProvider),
           _buildCityButton('Verona', Cities.verona, scooterProvider),
-          const Divider(),
-
-          _buildHeader('New Zealand'),
-          _buildCityButton('Auckland', Cities.auckland, scooterProvider),
-          const Divider(),
-
-          _buildHeader('Australia'),
-          _buildCityButton('Sydney', Cities.sydney, scooterProvider),
           const Divider(),
 
           _buildHeader('Belgium'),
