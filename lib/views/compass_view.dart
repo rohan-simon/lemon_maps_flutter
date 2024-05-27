@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lemun/models/bus_stop.dart';
 import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/models/vehicle_types.dart';
@@ -30,11 +31,34 @@ class CompassView extends StatefulWidget {
 class _CompassViewState extends State<CompassView> {
   bool _hasPermissions = false;
 
-  // Initialises compass view's state
+  // Initialises compass view's state.
   @override
   void initState() {
     super.initState();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]); // Pins compass view in portrait orientation
     _fetchPermissionStatus();
+  }
+
+  // Restores our orientation.
+  @override
+  void dispose() {
+    restoreOrientation();
+    super.dispose();
+  }
+
+  // Restores orientation when disposing. Code copied from https://github.com/flutter/flutter/issues/119473.
+  Future<bool> restoreOrientation() async {
+    // restore multiple orientation
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    // then all wanted orientation
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
+    return true;
   }
 
   // Returns double representing user's distance (in metres) to selected vehicle.
@@ -173,6 +197,7 @@ class _CompassViewState extends State<CompassView> {
   // Builds the UI from the provided context.
   @override
   Widget build(BuildContext context) {
+    
     DateTime updatedAt = DateTime.now();
     Color accentColor = _getAccentColor();
     Color textColor = _getTextColor();

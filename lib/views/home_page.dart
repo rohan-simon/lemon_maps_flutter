@@ -191,31 +191,31 @@ class _HomePageState extends State<HomePage> {
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
-                    onPressed: () => _clear(context), 
+                    onPressed: () {_clear(context); _showHideCanvas(context);}, 
                     icon: const Icon(Icons.clear)
                   ),
                   ),
               ),
               ),
 
-            Semantics(
-              button: true,
-              label: 'Canvas',
-              hint: 'allows drawing on the map',
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 255, 237, 147),
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    onPressed: () => _showHideCanvas(context),
-                    icon: const Icon(Icons.edit)
-                  ),
-                ),
-              )
-            ),
+          //   Semantics(
+          //     button: true,
+          //     label: 'Canvas',
+          //     hint: 'allows drawing on the map',
+          //     child: Padding(
+          //       padding: const EdgeInsets.all(5.0),
+          //       child: Container(
+          //         decoration: const BoxDecoration(
+          //           color: Color.fromARGB(255, 255, 237, 147),
+          //           shape: BoxShape.circle,
+          //         ),
+          //         child: IconButton(
+          //           onPressed: () => _showHideCanvas(context),
+          //           icon: const Icon(Icons.edit)
+          //         ),
+          //       ),
+          //     )
+          //   ),
           ]
         );
   }
