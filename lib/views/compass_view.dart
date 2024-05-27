@@ -9,6 +9,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:text_scroll/text_scroll.dart';
 
+
+// This class is the compass view for when the user taps on a map marker.
+// It shows the vehicle type that was selected, a real-time compass pointing
+// in the direction of the marker, distance from that marker, and other 
+// relevant information.
 class CompassView extends StatefulWidget {  
   final Vehicle vehicle;
   final double latitude;
@@ -20,8 +25,112 @@ class CompassView extends StatefulWidget {
   State<CompassView> createState() => _CompassViewState();
 }
 
+
+
 class _CompassViewState extends State<CompassView> {
   bool _hasPermissions = false;
+
+  // Initialises compass view's state
+  @override
+  void initState() {
+    super.initState();
+    _fetchPermissionStatus();
+  }
+
+  // Returns double representing user's distance (in metres) to selected vehicle.
+  // Parameters:
+  // - double myLat: user's latitude coordinate
+  // - double myLong: user's longitude coordinate
+  double _getDistance(double myLat, double myLong) {
+    return 100000 * math.sqrt(_squared(myLat - widget.latitude) + _squared(myLong - widget.longitude));
+  }
+
+  // This helper function takes the provided distance and returns it as a formatted String.
+  // If the provided distance (in metres) is greater than 1000, converts to kilometres;
+  // (e.g. an input of distance = 1435 will return the String '1.4 km').
+  // Parameter:
+  // - double distance: distance value (in metres) to convert into a String
+  String _distanceToString(double distance) {
+    if (distance > 1000) {
+      return '${(distance / 1000).toStringAsFixed(2)} km';
+    }
+    return '${distance.toStringAsFixed(0)} m';
+  }
+
+  // Returns a String representation of the vehicle's type.
+  // Used for the app bar's title.
+  // No parameters.
+  String _vehicleTypeAsString() {
+    final vehicle = widget.vehicle;
+    String stringRep = '';
+    if (vehicle is Lime) {
+      stringRep += 'Lime';
+    } else if (vehicle is LinkScooter) {
+      stringRep += 'Link';
+    } else if (vehicle is BusStop) {
+      stringRep += 'Bus Stop';
+    } else {
+      throw Exception('Invalid action'); // Impossible case
+    }
+    switch(vehicle.vehicleType) {
+      case VehicleType.bike: stringRep += ' Bike';
+      case VehicleType.scooter: stringRep += ' Scooter';
+      case VehicleType.bus: break; // Do nothing
+      case VehicleType.none: throw Exception('Invalid action');
+    }
+    return stringRep;
+  }
+
+  // Returns true if provided vehicle is available, false otherwise.
+  // Throws an exception if current vehicle type is 'none'.
+  // No parameters.
+  bool _availStatus() {
+    final vehicle = widget.vehicle;
+    if (vehicle is LinkScooter) {
+      return vehicle.isBookable;
+    } else if (vehicle is Lime) {
+      return !vehicle.isDisabled && !vehicle.isReserved; // Ensures that the Lime vehicle is both enabled and not reserved.
+    } else if (vehicle is BusStop) {
+      return true; // Bus stops are assumed available; note that this function should not be called on bus stops.
+    }
+    throw Exception('Invalid vehicle');
+  }
+
+  // Returns a double representation of the vehicle's bearing (0-360)
+  // from a given latitude and longitude where 0 is north and 180 is south.
+  // Parameters:
+  // - double myLat: user's latitude
+  // - double myLong: user's longitude
+  double _getBearing(double myLat, double myLong) {
+    double dLon = (widget.longitude - myLong);
+    
+    double x = math.cos(_degrees2Radians(widget.latitude)) * math.sin(_degrees2Radians(dLon));
+    double y = math.cos(_degrees2Radians(myLat)) * math.sin(_degrees2Radians(widget.latitude)) 
+             - math.sin(_degrees2Radians(myLat)) * math.cos(_degrees2Radians(widget.latitude)) * math.cos(_degrees2Radians(dLon));
+    double bearing = math.atan2(x, y);
+    return _radians2Degrees(bearing);
+  }
+
+  // Helper function; converts provided double from radians to degrees and returns.
+  // Parameter:
+  // - double x: the value to convert
+  double _radians2Degrees(double x) {
+    return x * 180 / math.pi;
+  }
+
+  // Helper function; converts provided double from degrees to radians and returns.
+  // Parameter:
+  // - double x: the value to convert
+  double _degrees2Radians(double x) {
+    return x / 180 * math.pi;
+  }
+
+  // Helper function; defines a square function. Returns the square of a provided number x.
+  // Parameter:
+  // - double x: the value to square
+  double _squared(double x) {
+    return x * x;
+  }
 
   Color _getAccentColor(Vehicle vehicle) {
     if (vehicle is Lime) {
@@ -52,83 +161,6 @@ class _CompassViewState extends State<CompassView> {
 
 
   @override
-  void initState() {
-    super.initState();
-    _fetchPermissionStatus();
-  }
-
-  // Returns double representing user's distance (in metres) to selected vehicle.
-  // Parameters:
-  // - double myLat: user's latitude coordinate
-  // - double myLong: user's longitude coordinate
-  double getDistance(double myLat, double myLong) {
-    return 100000 * math.sqrt(_squared(myLat - widget.latitude) + _squared(myLong - widget.longitude));
-  }
-
-  String distanceToString(double distance) {
-    if (distance > 1000) {
-      return '${(distance / 1000).toStringAsFixed(2)} km';
-    }
-    return '${distance.toStringAsFixed(0)} m';
-  }
-
-  String vehicleTypeAsString(Vehicle vehicle) {
-    String stringRep = '';
-    if (vehicle is Lime) {
-      stringRep += 'Lime';
-    } else if (vehicle is LinkScooter) {
-      stringRep += 'Link';
-    } else if (vehicle is BusStop) {
-      stringRep += 'Bus Stop';
-    } else {
-      throw Exception('Invalid action');
-    }
-    switch(vehicle.vehicleType) {
-      case VehicleType.bike: stringRep += ' Bike';
-      case VehicleType.scooter: stringRep += ' Scooter';
-      case VehicleType.bus: break; // Do nothing
-      case VehicleType.none: throw Exception('Invalid action');
-    }
-    return stringRep;
-  }
-
-  bool _availStatus(Vehicle vehicle) {
-    if (vehicle is BusStop) {
-      return true;
-    } else if (vehicle is LinkScooter) {
-      return vehicle.isBookable;
-    } else if (vehicle is Lime) {
-      return !vehicle.isDisabled && !vehicle.isReserved;
-    } else {
-      throw Exception('Invalid vehicle');
-    }
-  }
-
-  // Returns double representing bearing.
-  double _getBearing(double myLat, double myLong) {
-    double dLon = (widget.longitude - myLong);
-    
-    double x = math.cos(_degrees2Radians(widget.latitude)) * math.sin(_degrees2Radians(dLon));
-    double y = math.cos(_degrees2Radians(myLat)) * math.sin(_degrees2Radians(widget.latitude)) 
-             - math.sin(_degrees2Radians(myLat)) * math.cos(_degrees2Radians(widget.latitude)) * math.cos(_degrees2Radians(dLon));
-    double bearing = math.atan2(x, y);
-    return _radians2Degrees(bearing);
-  }
-
-  double _radians2Degrees(double x) {
-    return x * 180 / math.pi;
-  }
-
-  double _degrees2Radians(double x) {
-    return x / 180 * math.pi;
-  }
-
-  // Helper method; defines a square function. Returns the square of a provided number x.
-  double _squared(double x) {
-    return x * x;
-  }
-
-  @override
   Widget build(BuildContext context) {
     DateTime updatedAt = DateTime.now();
     Color accentColor = _getAccentColor(widget.vehicle);
@@ -145,7 +177,7 @@ class _CompassViewState extends State<CompassView> {
         title: Row(
           children: [
             Text(
-              '${vehicleTypeAsString(widget.vehicle)} ',
+              '${_vehicleTypeAsString()} ',
               style: TextStyle(color: textColor),
             ),
             Icon(_getIcon(widget.vehicle), color: textColor)
@@ -191,7 +223,7 @@ class _CompassViewState extends State<CompassView> {
                           borderRadius: const BorderRadius.all(Radius.circular(50))
                         ),
                         child: Text(
-                          '~${distanceToString(getDistance(positionProvider.latitude, positionProvider.longitude))} away',
+                          '~${_distanceToString(_getDistance(positionProvider.latitude, positionProvider.longitude))} away',
                           style: TextStyle(fontSize: 20, color: textColor),
                         ),
                       ),
@@ -233,7 +265,7 @@ class _CompassViewState extends State<CompassView> {
 
   Widget _buildStatus(Vehicle vehicle, DateTime updatedAt) {
     Color accentColor = const Color.fromARGB(255, 248, 221, 86);
-    bool isAvailable = _availStatus(vehicle);
+    bool isAvailable = _availStatus();
     String statusText = isAvailable ? 'Status: Available ' : 'Status: Unavailable ';
     IconData icon = isAvailable ? Icons.check_circle_rounded : Icons.remove_circle_rounded;
     Color iconColor = isAvailable ? Colors.green : Colors.red;
