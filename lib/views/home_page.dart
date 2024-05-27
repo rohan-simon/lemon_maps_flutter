@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:lemun/helpers/scooter_checker.dart';
 import 'package:lemun/models/bus_stop.dart';
-import 'package:lemun/models/lime.dart';
 import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/providers/drawing_provider.dart';
 import 'package:lemun/providers/opacity_provider.dart';
@@ -17,6 +15,7 @@ import 'package:lemun/providers/scooter_provider.dart';
 import 'package:lemun/views/map_view.dart';
 
 
+// ignore: must_be_immutable
 class HomePage extends StatefulWidget {
 
   HomePage({super.key, required this.busStops});
@@ -30,6 +29,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late final Timer _checkerTimer;
   late final ScooterChecker _sc;
+  final _backgroundColor = const Color.fromARGB(255, 248, 221, 86);
 
   @override
   Widget build(BuildContext context) {
@@ -37,37 +37,33 @@ class _HomePageState extends State<HomePage> {
     return Consumer3<ScooterProvider, OpacityProvider, PositionProvider>(
       builder: (context, scooterProvider, opacityProvider, positionProvider, child) {
 
-        // List<Text> coords = [Text('no coords yet')];
-
+        // Get all vehicles from provider
         List<Vehicle> limes = scooterProvider.limes ?? [];
         List<Vehicle> links = scooterProvider.links ?? [];
 
+        // Add all vehicles to one list
         List<Vehicle> allVehicles = [];
         for (Vehicle busStop in widget.busStops) { 
           allVehicles.add(busStop);
         }
-
         for (Vehicle lime in limes) {
           allVehicles.add(lime);
         }
-
         for (Vehicle link in links) {
           allVehicles.add(link);
         }
-
-        // limes = scooterProvider.limes ?? [];
 
         return Scaffold(
           appBar: opacityProvider.appBar,
           drawer: opacityProvider.drawer,
           body: Center(
-          child: Stack(
-            children: [
-              MapView(vehicles: allVehicles),
-              opacityProvider.canvas
-            ],
+            child: Stack(
+              children: [
+                MapView(vehicles: allVehicles),
+                opacityProvider.canvas
+              ],
+            ),
           ),
-        ),
         );
       }
     );
@@ -77,15 +73,20 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    final singleUseScooterProvider = Provider.of<ScooterProvider>(context, listen: false);
-    _sc = ScooterChecker(singleUseScooterProvider);
+    // Get non-listening providers
+    final singleUseScooterProvider = Provider.of<ScooterProvider>(context, listen: false);    
     final singleUseOpacityProvider = Provider.of<OpacityProvider>(context, listen: false);
     final singleUsePositionProver = Provider.of<PositionProvider>(context, listen: false);
+
+    // Initial state of app is no canvas shown
     singleUseOpacityProvider.appBar = _buildAppBar(context, true);
     singleUseOpacityProvider.drawer = Drawer(
+      backgroundColor: Colors.yellow,
       child: CitySelector(context)
     );
+
     // get initial scooter and bike list
+    _sc = ScooterChecker(singleUseScooterProvider);
     _sc.updateLocation(latitude: singleUsePositionProver.latitude, longitude: singleUsePositionProver.longitude);
     _sc.fetchLinkScooter();
     _sc.fetchLime();
@@ -106,11 +107,13 @@ class _HomePageState extends State<HomePage> {
     _checkerTimer.cancel();
   }
 
+  /// Clears the canvas
   _clear(BuildContext context) {
     final nonListen = Provider.of<DrawingProvider>(context, listen: false);
     nonListen.clear();
   }
 
+  /// Toggles whether canvas is shown or not
   _showHideCanvas(BuildContext context) {
     final nonListen = Provider.of<OpacityProvider>(context, listen: false);
     double width = MediaQuery.of(context).size.width;
@@ -122,6 +125,7 @@ class _HomePageState extends State<HomePage> {
     if (nonListen.showCanvas) {
       canvas = const Opacity(opacity: 0.0);
       drawer = Drawer(
+        backgroundColor: _backgroundColor,
         child: CitySelector(context)
       );
     } else {
@@ -130,18 +134,19 @@ class _HomePageState extends State<HomePage> {
         child: DrawArea(width: width, height: height)
       );
       drawer = Drawer(
+        backgroundColor: _backgroundColor,
         child: Palette(context),
       );
     }
     nonListen.updateCanvas(canvas, !nonListen.showCanvas, appBar, drawer);
   }
 
-  // Build the appbar based on whether the canvas should be on or off
+  /// Build the appbar based on whether the canvas should be on or off
   AppBar _buildAppBar(BuildContext context, bool showCanvas) {
     // Default look, 1 button to show the canvas
     if (showCanvas) {
       return AppBar(
-        backgroundColor: Color.fromARGB(255, 248, 221, 86),
+        backgroundColor: _backgroundColor,
         elevation: 4,
         shadowColor: Colors.black,
         title: const Text('LemÚn'),
@@ -164,7 +169,7 @@ class _HomePageState extends State<HomePage> {
 
     // Button to display the canvas has been tapped. Show button to exit, undo, and color drawer.
     return AppBar(
-          backgroundColor: Color.fromARGB(255, 248, 221, 86),
+          backgroundColor: _backgroundColor,
           elevation: 4,
           title: const Text('Draw your path'),
           actions: <Widget>[
