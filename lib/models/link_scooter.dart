@@ -16,10 +16,14 @@ class LinkScooter implements Vehicle {
   @override
   VehicleType vehicleType;
   
+  /// Constructor used by json factory construtor
   LinkScooter({required this.isBookable, required this.vehicleStatus, required this.bookingLength, 
     required this.batteryCharge, required this.distanceRemaining, required this.timeRemaining, 
     required this.latitude, required this.longitude, required this.id, required this.vehicleType});
 
+  /// Initializes a LinkScooter from a json
+  /// paramaters:
+  ///  - data: the json to turn into a LinkScooter object
   factory LinkScooter.fromJson(Map<String, dynamic> data) {
     final id = data['id'];
     final isBookable = data['is_bookable'];

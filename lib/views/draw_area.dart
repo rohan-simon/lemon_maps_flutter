@@ -42,22 +42,6 @@ class DrawArea extends StatelessWidget {
       case Tools.none:
         drawingProvider.pendingAction = NullAction();
         break;
-      // case Tools.line:
-      //   // Add a new line action to our pending action
-      //   drawingProvider.pendingAction = LineAction(
-      //     details.localPosition,
-      //     details.localPosition,
-      //     drawingProvider.colorSelected,
-      //   );
-      //   break;
-      // case Tools.oval:
-      //   // add a new oval action to our pending action
-      //   drawingProvider.pendingAction = OvalAction(
-      //     details.localPosition,
-      //     details.localPosition,
-      //     drawingProvider.colorSelected,
-      //   );
-      //   break;
       case Tools.stroke:
         // add a new stroke action to our pending action
         drawingProvider.pendingAction = StrokeAction(
@@ -77,15 +61,6 @@ class DrawArea extends StatelessWidget {
     switch (currentTool) {
       case Tools.none:
         break;
-      // case Tools.line:
-      //   // update our line to have the endpoint of the current location
-      //   final pendingAction = drawingProvider.pendingAction as LineAction;
-      //   drawingProvider.pendingAction = LineAction(
-      //     pendingAction.point1,
-      //     details.localPosition,
-      //     pendingAction.color,
-      //   );
-      //   break;
       case Tools.stroke:
         // update the stroke list to include the current location
         final pendingAction = drawingProvider.pendingAction as StrokeAction;
@@ -96,15 +71,6 @@ class DrawArea extends StatelessWidget {
           pendingAction.color
         );
         break;
-      // case Tools.oval:
-      //   // update the endpoint of the oval to the current location
-      //   final pendingAction = drawingProvider.pendingAction as OvalAction;
-      //   drawingProvider.pendingAction = OvalAction(
-      //     pendingAction.point1,
-      //     details.localPosition,
-      //     pendingAction.color
-      //   );
-      //   break;
       default:
         throw UnimplementedError('Tool not implemented: $currentTool');
     }

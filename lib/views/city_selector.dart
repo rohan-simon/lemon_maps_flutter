@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 class CitySelector extends StatelessWidget {
   const CitySelector(BuildContext context, {super.key});
 
-  
   @override
   Widget build(BuildContext context) {
     return Consumer<ScooterProvider>(
@@ -18,6 +17,7 @@ class CitySelector extends StatelessWidget {
             child: Text('Choose a city'),
           ),
 
+          // US
           _buildHeader('United States'),
           _buildCityButton('Cleveland', Cities.cleveland, scooterProvider),
           _buildCityButton('Detroit', Cities.detroit, scooterProvider),
@@ -35,6 +35,7 @@ class CitySelector extends StatelessWidget {
 
           const Divider(),
 
+          // Germany
           _buildHeader('Germany'),
           _buildCityButton('Hamburg', Cities.hamburg, scooterProvider),
           _buildCityButton('Oberhausen', Cities.oberhausen, scooterProvider),
@@ -42,34 +43,41 @@ class CitySelector extends StatelessWidget {
           _buildCityButton('Solingen', Cities.solingen, scooterProvider),
           const Divider(),
 
+          // Switzerland
           _buildHeader('Switzerland'),
           _buildCityButton('Opfikon', Cities.opfikon, scooterProvider),
           _buildCityButton('Zug', Cities.zug, scooterProvider),
           const Divider(),
 
+          // France
           _buildHeader('France'),
           _buildCityButton('Paris', Cities.paris, scooterProvider),
           _buildCityButton('Marseille', Cities.marseille, scooterProvider),
           const Divider(),
 
+          // Canada
           _buildHeader('Canada'),
           _buildCityButton('Kelowna', Cities.kelowna, scooterProvider),
           _buildCityButton('Edmonton', Cities.edmonton, scooterProvider),
           const Divider(),
 
+          // Israel
           _buildHeader('Israel'),
           _buildCityButton('Tel Aviv', Cities.tel_aviv, scooterProvider),
           const Divider(),
           
+          // Norway
           _buildHeader('Norway'),
           _buildCityButton('Oslo', Cities.oslo, scooterProvider),
           const Divider(),
 
+          // Italy
           _buildHeader('Italy'),
           _buildCityButton('Rome', Cities.rome, scooterProvider),
           _buildCityButton('Verona', Cities.verona, scooterProvider),
           const Divider(),
 
+          // Belgium
           _buildHeader('Belgium'),
           _buildCityButton('Antwerp', Cities.antwerp, scooterProvider),
           _buildCityButton('Brussels', Cities.brussels, scooterProvider),
@@ -79,6 +87,9 @@ class CitySelector extends StatelessWidget {
     );
   }
 
+  /// Takes a country name and makes a heading out of it.
+  /// paramaters:
+  ///  - text: the country to build a header for
   Widget _buildHeader(String text) {
     return Semantics(
       button: false,
@@ -93,7 +104,11 @@ class CitySelector extends StatelessWidget {
     );
   }
 
-  
+  /// Makes a button to select the city the user wants the Lime api to pull from
+  /// parameters:
+  ///  - name: city name
+  ///  - city: city to select
+  ///  - provider: Scooter Provider to handle state
   Widget _buildCityButton(String name, Cities city, ScooterProvider provider) {
     bool selected = provider.city == city;
 
@@ -106,6 +121,7 @@ class CitySelector extends StatelessWidget {
         children: [
           InkWell(
           onTap: () {
+            // update state
             provider.city = city;
             ScooterChecker sc = ScooterChecker(provider);
             sc.fetchLime();

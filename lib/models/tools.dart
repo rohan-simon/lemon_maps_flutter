@@ -1,1 +1,1 @@
-enum Tools { none, stroke, line, oval }
+enum Tools { none, stroke }

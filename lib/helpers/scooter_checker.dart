@@ -12,14 +12,19 @@ class ScooterChecker {
   var _longitude = 11.0760811;
   var _city = Cities.seattle;
 
-  // ScooterChecker();
   ScooterChecker(this.scooterProvider);
 
+  /// Updates the location that the Link API uses
+  /// parameters:
+  ///  - latitude: The latitude to update
+  ///  - longitude: The longitude to update
   updateLocation({required latitude, required longitude})  {
     _latitude = latitude;
     _longitude = longitude;
   }
 
+  /// Gets the current list of the Link scooters based on the user's
+  /// current position, updating the scooter provider
   fetchLinkScooter() async {
 
     var client = http.Client();
@@ -27,13 +32,13 @@ class ScooterChecker {
       var latitude = _latitude.toString();
       var longitude = _longitude.toString();
 
-      // connect to APIs
+      // connect to Link API
       final linkResponse = await client.get(
         Uri.parse('https://vehicles.linkyour.city/reservation-api/local-vehicles/?format=json&latitude=$latitude&longitude=$longitude')
       );
       final linkParsed = (jsonDecode(linkResponse.body));
 
-      // Convert jsons to dart objects
+      // Convert json to Link list
       final List<LinkScooter> links = (linkParsed['vehicles'] as List)
         .map((vehicle) => LinkScooter.fromJson(vehicle)).toList();
 
@@ -41,32 +46,36 @@ class ScooterChecker {
       scooterProvider.updateLinks(links);
 
     } catch (e) {
+      // ignore: avoid_print
       print(e);
-    } finally {
+    }finally {
       client.close();
     }
   }
 
+  /// Gets the current list of the Lime vehicles based on the user's
+  /// currently selected city, updating the scooter provider
   fetchLime() async {
     var client = http.Client();
     _city = scooterProvider.city;
     try {
+      // Connect to lime API
       var limeResponse = await client.get(
         Uri.parse('https://data.lime.bike/api/partners/v1/gbfs/${_city.name}/free_bike_status')
       );
       var limeParsed = (jsonDecode(limeResponse.body));
 
+      // convert json to Lime list
       final List<Lime> limes = (limeParsed['data']?['bikes'] as List)
           .map((vehicle) => Lime.fromJson(vehicle)).toList();
 
+      // update scooter provider
       scooterProvider.updateLimes(limes);
     } catch (e) {
+      // ignore: avoid_print
       print(e);
     } finally {
       client.close();
-    }
-    
+    } 
   }
-
-
 }

@@ -43,12 +43,6 @@ class DrawingPainter extends CustomPainter {
         case ClearAction _:
           canvas.drawRect(rect, erasePaint);
           break;
-        // case LineAction lineAction:
-        //   final paint = Paint()..color = lineAction.color
-        //   ..strokeWidth = 2;
-        //   // create line from 2 points
-        //   canvas.drawLine(lineAction.point1, lineAction.point2, paint);
-        //   break;
         case StrokeAction strokeAction:
           final paint = Paint()..color = strokeAction.color
           ..strokeWidth = 2;
@@ -57,13 +51,6 @@ class DrawingPainter extends CustomPainter {
             canvas.drawLine(strokeAction.points[i], strokeAction.points[i+1], paint);
           }
           break;
-        // case OvalAction ovalAction:
-        //   final paint = Paint()..color = ovalAction.color
-        //   ..strokeWidth = 2;
-        //   // create oval from two points
-        //   Rect rect = Rect.fromPoints(ovalAction.point1, ovalAction.point2);
-        //   canvas.drawOval(rect, paint);
-        //   break;
         default:
           throw UnimplementedError('Action not implemented: $action'); 
       }

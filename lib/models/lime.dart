@@ -12,9 +12,13 @@ class Lime implements Vehicle {
   @override
   VehicleType vehicleType;
 
+  /// Constructor used by json factory construtor
   Lime({required this.id, required this.latitude, required this.longitude,
         required this.isReserved, required this.isDisabled, required this.vehicleType});
 
+  /// Initializes a Lime from a json
+  /// paramaters:
+  ///  - data: the json to turn into a Lime object
   factory Lime.fromJson(Map<String, dynamic> data) {
     final id = data['bike_id'];
     final latitude = data['lat'];
