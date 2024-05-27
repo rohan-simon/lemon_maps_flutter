@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
     // Initial state of app is no canvas shown
     singleUseOpacityProvider.appBar = _buildAppBar(context, true);
     singleUseOpacityProvider.drawer = Drawer(
-      backgroundColor: Colors.yellow,
+      backgroundColor: const Color.fromARGB(255, 248, 221, 86),
       child: CitySelector(context)
     );
 
@@ -157,11 +157,14 @@ class _HomePageState extends State<HomePage> {
             hint: 'allows drawing on the map',
             child: Padding(
               padding: const EdgeInsets.all(5.0),
-              child: SizedBox(
-                width: 50,
-                child: ElevatedButton(
+              child: Container(
+                decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 255, 237, 147),
+                    shape: BoxShape.circle,
+                  ),
+                child: IconButton(
                   onPressed: () => _showHideCanvas(context),
-                  child: const Icon(Icons.edit)
+                  icon: const Icon(Icons.edit)
                 ),
               ),
             )
@@ -180,13 +183,19 @@ class _HomePageState extends State<HomePage> {
               button: true,
               label: 'Clear',
               hint: 'clears the canvas',
-              child: SizedBox(
-                  width: 50,
-                  child: ElevatedButton(
-                    onPressed: () => _clear(context), 
-                    child: const Icon(Icons.clear)
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 255, 237, 147),
+                    shape: BoxShape.circle,
                   ),
-                ),
+                  child: IconButton(
+                    onPressed: () => _clear(context), 
+                    icon: const Icon(Icons.clear)
+                  ),
+                  ),
+              ),
               ),
 
             Semantics(
@@ -195,11 +204,14 @@ class _HomePageState extends State<HomePage> {
               hint: 'allows drawing on the map',
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: SizedBox(
-                  width: 50,
-                  child: ElevatedButton(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 255, 237, 147),
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
                     onPressed: () => _showHideCanvas(context),
-                    child: const Icon(Icons.edit)
+                    icon: const Icon(Icons.edit)
                   ),
                 ),
               )
