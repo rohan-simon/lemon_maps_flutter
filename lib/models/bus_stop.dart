@@ -3,8 +3,11 @@ import 'dart:math';
 import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/models/vehicle_types.dart';
 
+// This class represents a bus stop that can be displayed on the map view
 class BusStop implements Vehicle {
 
+
+  // Constructor to set all the fields of the bus stops - name, latitude, and longitude
   BusStop({required this.name, required this.latitude, required this.longitude});
 
   final String name;
@@ -16,7 +19,8 @@ class BusStop implements Vehicle {
   final VehicleType vehicleType = VehicleType.bus;
 
 
- 
+
+  // Gets the distance of a bus stop to a another position (represented by a latitude, longitude)
   double distanceFrom({required double latitude, required double longitude}) {
     double dx = (this.latitude - latitude);
     double dy = (this.longitude - longitude);
@@ -38,7 +42,7 @@ class BusStop implements Vehicle {
     return '$name: ($latitude, $longitude)';
 
   }
-  
+  // Private helper for some distance math
   num _squared(num x) { return x * x; }
 
 }

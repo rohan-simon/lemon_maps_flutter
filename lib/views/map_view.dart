@@ -303,7 +303,7 @@ class MapViewState extends State<MapView> {
               mapController: _mapController,
               options: MapOptions(
                 maxZoom: 19,
-                minZoom: 14,
+                minZoom: 10,
                 initialCenter:  _currentPosition,
                 onMapReady: _onMapReady,
               ),
