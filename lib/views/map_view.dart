@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'dart:math' as math;
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:lemun/models/vehicle.dart';
@@ -12,11 +12,12 @@ import 'package:provider/provider.dart';
 // Allows users to filter through the legend buttons and move to their location
 class MapView extends StatefulWidget {
   final List<Vehicle> vehicles;
+  final bool showLegend;
 
   // Creates a MapView with a given list of vehicles on it
   // Parameters:
   //      vehicles: a list of Vehicle objects to display on the map
-  const MapView({super.key, required this.vehicles});
+  const MapView({super.key, required this.vehicles, required this.showLegend});
 
   @override
   MapViewState createState() => MapViewState();
@@ -78,14 +79,27 @@ class MapViewState extends State<MapView> {
         .where((vehicle) => _visibleVehicleTypes.contains(vehicle.vehicleType))
         .map((vehicle) {
       return Marker(
-        width: 80.0,
-        height: 80.0,
+        width: 70.0,
+        height: 70.0,
         point: LatLng(vehicle.latitude, vehicle.longitude),
         child: GestureDetector(
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => CompassView(vehicle: vehicle)));
           },
-          child: getVehicleIcon(vehicle.vehicleType)
+          child: Opacity(
+            opacity: 0.75,
+            child: Align(
+              alignment: Alignment.center,
+              child: Container(
+                padding: const EdgeInsets.all(5),
+                decoration: const BoxDecoration(
+                  color: Colors.black,
+                  shape: BoxShape.circle,
+                ),
+                child: Opacity(opacity: 1, child: getVehicleIcon(vehicle.vehicleType)),
+              ),
+            ),
+          )
         )
       );
     }).toList();
@@ -98,13 +112,13 @@ class MapViewState extends State<MapView> {
   Icon getVehicleIcon(VehicleType type) {
     switch (type) {
     case VehicleType.bike:
-      return const Icon(Icons.directions_bike, color: Colors.green, size: 40);
+      return const Icon(Icons.directions_bike, color: Colors.green, size: 25);
     case VehicleType.scooter:
-      return const Icon(Icons.electric_scooter, color: Colors.orange, size: 40);
+      return const Icon(Icons.electric_scooter, color: Colors.orange, size: 25);
     case VehicleType.bus:
-      return const Icon(Icons.directions_bus, color: Colors.blue, size: 40);
+      return const Icon(Icons.directions_bus, color: Colors.blue, size: 25);
     default:
-      return const Icon(Icons.location_on, color: Colors.red, size: 40);
+      return const Icon(Icons.location_on, color: Colors.red, size: 25);
     }
   }
 
@@ -143,65 +157,73 @@ class MapViewState extends State<MapView> {
     return Semantics(
       label: 'Legend',
       child: Container(
+        alignment: Alignment.center,
         padding: const EdgeInsets.all(10.0),
-        color: Colors.amber[100],
-        width: double.infinity,
-        child: Align(
-          alignment: Alignment.center,
-          child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Expanded(
-                      child: Semantics(
-                        label: (bikeColor == Colors.grey ? 'currently unselected' : 'currently selected'),
-                        selected: true,
-                        child: GestureDetector(
-                          onTap: () {
-                            _toggleVehicleType(VehicleType.bike);
-                          },
-                          child: legendItem(Icons.directions_bike, bikeColor, 'Bike')
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Semantics(
-                        label: (scooterColor == Colors.grey ? 'currently unselected' : 'currently selected'),
-                        child: GestureDetector(
-                          onTap: () {
-                            _toggleVehicleType(VehicleType.scooter);
-                          },
-                          child: legendItem(Icons.electric_scooter, scooterColor, 'Scooter')
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Semantics(
-                        label: (busColor == Colors.grey ? 'currently unselected' : 'currently selected'),
-                        child: GestureDetector(
-                          onTap: () {
-                            _toggleVehicleType(VehicleType.bus);
-                          },
-                          child: legendItem(Icons.directions_bus, busColor, 'Bus Stop')
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Semantics(
-                        label: 'Navigate to ',
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _needsUpdate = true;
-                            });
-                            _updateCurrentLocation();
-                          },
-                          child: legendItem(Icons.catching_pokemon, Colors.red, 'You')
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+        decoration: const BoxDecoration(
+          color: Color.fromARGB(255, 255, 242, 175),
+          boxShadow: [BoxShadow(
+            color: Color.fromARGB(105, 1, 1, 1),
+            offset: Offset(0, -2.0),
+            blurRadius: 4.0,
+            spreadRadius: 0,
+          )],
         ),
+        height: math.max(MediaQuery.of(context).size.height / 6.5, 120),
+        width: double.infinity,
+        child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Semantics(
+                      label: (bikeColor == Colors.grey ? 'currently unselected' : 'currently selected'),
+                      selected: true,
+                      child: GestureDetector(
+                        onTap: () {
+                          _toggleVehicleType(VehicleType.bike);
+                        },
+                        child: legendItem(Icons.directions_bike, bikeColor, 'Bike')
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Semantics(
+                      label: (scooterColor == Colors.grey ? 'currently unselected' : 'currently selected'),
+                      child: GestureDetector(
+                        onTap: () {
+                          _toggleVehicleType(VehicleType.scooter);
+                        },
+                        child: legendItem(Icons.electric_scooter, scooterColor, 'Scooter')
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Semantics(
+                      label: (busColor == Colors.grey ? 'currently unselected' : 'currently selected'),
+                      child: GestureDetector(
+                        onTap: () {
+                          _toggleVehicleType(VehicleType.bus);
+                        },
+                        child: legendItem(Icons.directions_bus, busColor, 'Bus Stop')
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Semantics(
+                      label: 'Navigate to ',
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _needsUpdate = true;
+                          });
+                          _updateCurrentLocation();
+                        },
+                        child: legendItem(Icons.catching_pokemon, Colors.red, 'You')
+                      ),
+                    ),
+                  ),
+                ],
+              ),
           ),
     );
     }
@@ -213,12 +235,14 @@ class MapViewState extends State<MapView> {
   //      label: the text label of the item
   // Returns: a legend item widget
   Widget legendItem(IconData iconData, Color color, String label) {
+    Color textColor = color == Colors.grey ? color : Colors.black;
     return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(iconData, color: color, size: 48),
           Text(
             label,
-            style: const TextStyle(color: Colors.purple, fontSize: 10),
+            style: TextStyle(color: textColor, fontSize: 13, fontWeight: FontWeight.bold),
           ),
         ],
     );
@@ -240,48 +264,45 @@ class MapViewState extends State<MapView> {
               _updateCurrentLocation();
             });
           }
-          return Column(
-            children: [
-              Expanded(
-                flex: 3,
-                child: Semantics(
-                  label: 'map view',
-                  excludeSemantics: true,
-                  child: FlutterMap(
-                    mapController: _mapController,
-                    options: MapOptions(
-                      maxZoom: 19,
-                      minZoom: 14,
-                      initialCenter:  _currentPosition,
-                      onMapReady: _onMapReady,
-                    ),
-                    children: [
-                      TileLayer(
-                        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        userAgentPackageName: 'com.example.app',
-                      ),
-                      MarkerLayer(
-                        markers: [
-                          ...createVehicleMarkers(widget.vehicles),
-                          Marker(
-                            width: 80,
-                            height: 80,
-                            point: _currentPosition,
-                            rotate: false,
-                            child: const Icon(Icons.catching_pokemon, color: Colors.red, size: 40),
-                          )                    
-                        ]
-                      )
-                    ],
-                  ),
-                ),
+          return Semantics(
+            label: 'map view',
+            excludeSemantics: true,
+            child: FlutterMap(
+              mapController: _mapController,
+              options: MapOptions(
+                maxZoom: 19,
+                minZoom: 14,
+                initialCenter:  _currentPosition,
+                onMapReady: _onMapReady,
               ),
-              Expanded(
-                flex: 1,
-                child: buildLegend(),
-              )
-            ],
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  userAgentPackageName: 'com.example.app',
+                ),
+                MarkerLayer(
+                  markers: [
+                    ...createVehicleMarkers(widget.vehicles),
+                    Marker(
+                      width: 40,
+                      height: 40,
+                      point: _currentPosition,
+                      rotate: false,
+                      child: Container(decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle), child: const Icon(Icons.catching_pokemon, color: Colors.red, size: 40)),
+                    )                    
+                  ]
+                )
+              ],
+            ),
           );
+        }
+      ),
+      bottomNavigationBar: Builder(
+        builder: (context) {
+          if (widget.showLegend) {
+            return buildLegend();
+          }
+          return Container(height: 0);
         }
       ),
     );

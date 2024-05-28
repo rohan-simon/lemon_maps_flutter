@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage> {
           body: Center(
             child: Stack(
               children: [
-                MapView(vehicles: allVehicles),
+                MapView(vehicles: allVehicles, showLegend: !opacityProvider.showCanvas,),
                 opacityProvider.canvas
               ],
             ),
@@ -149,7 +149,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: _backgroundColor,
         elevation: 4,
         shadowColor: Colors.black,
-        title: const Text('LemÚn'),
+        title: const Text('LemÚn', style: TextStyle(fontWeight: FontWeight.bold)),
         actions: <Widget>[
           Semantics(
             button: true,
@@ -173,10 +173,11 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
-    // Button to display the canvas has been tapped. Show button to exit, undo, and color drawer.
+    // Button to display the canvas has been tapped. Show button to exit and clear, and a color drawer.
     return AppBar(
           backgroundColor: _backgroundColor,
           elevation: 4,
+          shadowColor: Colors.black,
           title: const Text('Draw your path'),
           actions: <Widget>[
             Semantics(

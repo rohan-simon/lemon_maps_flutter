@@ -13,8 +13,11 @@ class Palette extends StatelessWidget {
       builder: (context, drawingProvider, unchangingChild) => ListView(
         scrollDirection: Axis.vertical,
         children: [
-          const DrawerHeader(
-            child: Text('Colors'),
+          const SizedBox(
+            height: 100,
+            child: DrawerHeader(
+              child: Text('Colors'),
+            ),
           ),
 
           // colors

@@ -235,7 +235,7 @@ class _CompassViewState extends State<CompassView> {
                   busStopName = busStopName.substring(1, busStopName.length - 1);
                   return _buildBusStopName(busStopName);
                 } else if (widget.vehicle is Lime || widget.vehicle is LinkScooter) { // ... otherwise builds a status widget
-                  return _buildStatus(widget.vehicle, updatedAt);
+                  return _buildStatus(updatedAt);
                 } else {
                   throw Exception("Invalid vehicle type: ${widget.vehicle}"); // Case should not be possible
                 }
@@ -251,7 +251,7 @@ class _CompassViewState extends State<CompassView> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 50),
-                    _buildCompass(positionProvider, accentColor), // Compass
+                    _buildCompass(positionProvider), // Compass
                     const SizedBox(height: 10),
                     // Distance text
                     Padding(
@@ -285,6 +285,9 @@ class _CompassViewState extends State<CompassView> {
     );
   }
 
+  // Builds a widget representing a scrolling bus stop text box from the provided name.
+  // Parameter:
+  // - String name: bus stop's name
   Widget _buildBusStopName(String name) {
     return Container(
       alignment: Alignment.center,
@@ -308,7 +311,10 @@ class _CompassViewState extends State<CompassView> {
     );
   }
 
-  Widget _buildStatus(Vehicle vehicle, DateTime updatedAt) {
+  // Builds a widget representing a scooter or bike's status text.
+  // Parameter:
+  // - DateTime updatedAt: time the vehicle's status was last updated
+  Widget _buildStatus(DateTime updatedAt) {
     Color accentColor = const Color.fromARGB(255, 248, 221, 86);
     bool isAvailable = _availStatus();
     String statusText = isAvailable ? 'Status: Available ' : 'Status: Unavailable ';
@@ -373,8 +379,10 @@ class _CompassViewState extends State<CompassView> {
     );
   }
 
-  // Builds compass
-  Widget _buildCompass(PositionProvider positionProvider, Color compassColor) {
+  // Builds compass from given position provider.
+  // Parameter:
+  // - PositionProvider positionProvider: the position provider
+  Widget _buildCompass(PositionProvider positionProvider) {
     return StreamBuilder<CompassEvent>(
       stream: FlutterCompass.events,
       builder: (context, snapshot) {
