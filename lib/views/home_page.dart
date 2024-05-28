@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
     // Get non-listening providers
     final singleUseScooterProvider = Provider.of<ScooterProvider>(context, listen: false);    
     final singleUseOpacityProvider = Provider.of<OpacityProvider>(context, listen: false);
-    final singleUsePositionProver = Provider.of<PositionProvider>(context, listen: false);
+    final singleUsePositionProvider = Provider.of<PositionProvider>(context, listen: false);
 
     // Initial state of app is no canvas shown
     singleUseOpacityProvider.appBar = _buildAppBar(context, true);
@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
 
     // get initial scooter and bike list
     _sc = ScooterChecker(singleUseScooterProvider);
-    _sc.updateLocation(latitude: singleUsePositionProver.latitude, longitude: singleUsePositionProver.longitude);
+    _sc.updateLocation(latitude: singleUsePositionProvider.latitude, longitude: singleUsePositionProvider.longitude);
     _sc.fetchLinkScooter();
     _sc.fetchLime();
 
@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
     _checkerTimer = Timer.periodic(
       const Duration(seconds: 60), 
       (timer) { 
-        _sc.updateLocation(latitude: singleUsePositionProver.latitude, longitude: singleUsePositionProver.longitude);
+        _sc.updateLocation(latitude: singleUsePositionProvider.latitude, longitude: singleUsePositionProvider.longitude);
         _sc.fetchLinkScooter();
         _sc.fetchLime();
       }
