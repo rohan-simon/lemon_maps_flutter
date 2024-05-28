@@ -256,10 +256,11 @@ class _CompassViewState extends State<CompassView> {
                     const SizedBox(height: 10),
                     // Distance text
                     Padding(
-                      padding: const EdgeInsets.all(25),
+                      padding: const EdgeInsets.all(5),
                       child: Container(
                         alignment: Alignment.center,
-                        padding: const EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 10),
+                        padding: //const EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 10),
+                                    const EdgeInsets.all(5.0),
                         decoration: BoxDecoration(
                           color: Color.fromARGB(255, 
                                                 math.min(accentColor.red + 16, 255), 
