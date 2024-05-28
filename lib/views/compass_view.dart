@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:lemun/models/bus_stop.dart';
 import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/models/vehicle_types.dart';
@@ -412,6 +413,9 @@ class _CompassViewState extends State<CompassView> {
     );
   }
 
+  // Builds a permission sheet (should not be encountered by user) with
+  // a button that takes user to their settings app and requests location.
+  // No parameters.
   Widget _buildPermissionSheet() {
     return Center(
       child: Column(
@@ -431,11 +435,11 @@ class _CompassViewState extends State<CompassView> {
     );
   }
 
-  void _fetchPermissionStatus() {
-    Permission.locationWhenInUse.status.then((status) {
-      if (mounted) {
-        setState(() => _hasPermissions = status == PermissionStatus.granted);
-      }
+  // Fetches user's permission status.
+  Future<void> _fetchPermissionStatus() async {
+    var perm = await Geolocator.isLocationServiceEnabled();
+    setState(() {
+      _hasPermissions = perm;
     });
   }
 }
