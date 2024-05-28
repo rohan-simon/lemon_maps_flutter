@@ -244,7 +244,7 @@ class MapViewState extends State<MapView> {
           Icon(iconData, color: color, size: 48),
           Text(
             label,
-            style: TextStyle(color: textColor, fontSize: 13, fontWeight: FontWeight.bold),
+            style: TextStyle(color: textColor, fontSize: 13, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),
           ),
         ],
     );
