@@ -263,7 +263,8 @@ class MapViewState extends State<MapView> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          const Text('Location Permissions Required'),
+          const Text('Location Permissions Required', style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 5),
           ElevatedButton(
             child: const Text('Open App Settings'),
             onPressed: () {

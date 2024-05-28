@@ -149,7 +149,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: _backgroundColor,
         elevation: 4,
         shadowColor: Colors.black,
-        title: const Text('LemÚn', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('LemÚn', style: TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 55, 37, 58))),
         actions: <Widget>[
           Semantics(
             button: true,
