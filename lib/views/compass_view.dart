@@ -324,7 +324,6 @@ class _CompassViewState extends State<CompassView> {
     if (updatedAt.minute < 10) {
       minute = '0$minute';
     }
-    
     return Padding(
       padding: const EdgeInsets.only(right: 12),
       child: Row(

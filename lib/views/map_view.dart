@@ -6,6 +6,7 @@ import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/models/vehicle_types.dart';
 import 'package:lemun/providers/position_provider.dart';
 import 'package:lemun/views/compass_view.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 // Stateful class that displays a map with vehicle markers and a legend
@@ -37,6 +38,7 @@ class MapViewState extends State<MapView> {
   void initState() {
     super.initState();
     _mapController = MapController();
+    _fetchPermissionStatus();
   }
 
   // called when map is ready to update current location
@@ -248,15 +250,44 @@ class MapViewState extends State<MapView> {
     );
   }
 
+  void _fetchPermissionStatus() {
+    Permission.locationWhenInUse.status.then((status) {
+      if (mounted) {
+        setState(() => _mapReady = status == PermissionStatus.granted);
+      }
+    });
+  }
+
+  Widget _buildPermissionSheet() {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          const Text('Location Permissions Required'),
+          ElevatedButton(
+            child: const Text('Open App Settings'),
+            onPressed: () {
+              openAppSettings().then((opened) {
+                //
+              });
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Consumer<PositionProvider>(
         builder: (context, positionProvider, child) {
+          
           if (!positionProvider.status && !positionProvider.loadFailure) {
+            _fetchPermissionStatus();
             return const Center(child: CircularProgressIndicator());
           } else if (positionProvider.loadFailure) {
-            return const Center(child: Text('Failed to load location'));
+            return _buildPermissionSheet();
           }
 
           if (_mapReady) {
