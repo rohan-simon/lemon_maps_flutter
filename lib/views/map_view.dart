@@ -303,7 +303,7 @@ class MapViewState extends State<MapView> {
               mapController: _mapController,
               options: MapOptions(
                 maxZoom: 19,
-                minZoom: 14,
+                minZoom: 10,
                 initialCenter:  _currentPosition,
                 onMapReady: _onMapReady,
               ),
@@ -323,18 +323,26 @@ class MapViewState extends State<MapView> {
                             height: 40,
                             point: _currentPosition,
                             rotate: false,
-                            child: Container(decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle), child: const Icon(Icons.catching_pokemon, color: Colors.red, size: 40)),
+                            child: Container(
+                              decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                              child: const Icon(Icons.catching_pokemon, color: Colors.red, size: 40)),
                           )                    
                         ]
                       );
                     }
-                    return MarkerLayer(markers: [Marker(
-                            width: 40,
-                            height: 40,
-                            point: _currentPosition,
-                            rotate: false,
-                            child: Container(decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle), child: const Icon(Icons.catching_pokemon, color: Colors.red, size: 40)),
-                          )] );
+                    return MarkerLayer(
+                      markers: [
+                        Marker(
+                          width: 40,
+                          height: 40,
+                          point: _currentPosition,
+                          rotate: false,
+                          child: Container(
+                            decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle), 
+                            child: const Icon(Icons.catching_pokemon, color: Colors.red, size: 40)),
+                        )
+                      ]
+                    );
                   }
                 )
               ],
