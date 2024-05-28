@@ -312,30 +312,17 @@ class MapViewState extends State<MapView> {
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.example.app',
                 ),
-                Builder(
-                  builder: (context) {
-                    if (MapCamera.of(context).zoom > 16) {
-                      return MarkerLayer(
-                        markers: [
-                          ...createVehicleMarkers(widget.vehicles),
-                          Marker(
-                            width: 40,
-                            height: 40,
-                            point: _currentPosition,
-                            rotate: false,
-                            child: Container(decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle), child: const Icon(Icons.catching_pokemon, color: Colors.red, size: 40)),
-                          )                    
-                        ]
-                      );
-                    }
-                    return MarkerLayer(markers: [Marker(
-                            width: 40,
-                            height: 40,
-                            point: _currentPosition,
-                            rotate: false,
-                            child: Container(decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle), child: const Icon(Icons.catching_pokemon, color: Colors.red, size: 40)),
-                          )] );
-                  }
+                MarkerLayer(
+                  markers: [
+                    ...createVehicleMarkers(widget.vehicles),
+                    Marker(
+                      width: 40,
+                      height: 40,
+                      point: _currentPosition,
+                      rotate: false,
+                      child: Container(decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle), child: const Icon(Icons.catching_pokemon, color: Colors.red, size: 40)),
+                    )                    
+                  ]
                 )
               ],
             ),
