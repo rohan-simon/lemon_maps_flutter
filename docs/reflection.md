@@ -5,11 +5,11 @@
 
 **Properties of People: Vision**
 
-Our color contrast between text and icons to background is high enough. Our icons are distinct for the different vehicle types and have different colors to distinguish. We put black circles behind the vehicle icons to make them stand out more on the map. We limit our use of blue. The UI is fairly simple being just a map and 4 clickable icons initially, and allows for more complex functions such as the canvas if users want to have that functionality. 
+Our color contrast between text, icons, and background meets accessibility standards. We use distinct icons for different vehicle types and have different colors to distinguish between them. Our vehicle icon markers are also backed by black circles to make them stand out more against the bright white of the map. We also limited our use of blue and focused on yellows, a colour often associated with happiness. The UI is fairly simple, being just a map and 4 clickable icons initially, allowing for more complex functions such as the canvas if users desire that functionality.
 
 **Properties of People: Motor Control**
 
-Similar purpose buttons are grouped together and the button sizes are large enough and spread out enough. All the legend buttons are grouped together at the bottom in a horizontal row, but there is padding between each and each button is given a generous size. 
+As a map app, navigation is a priority and we focused on providing a smooth and unhindered experience for our users. For instance, buttons with similar purposes are grouped together in their respective drawers, and the button sizes are large and spread out. All the legend buttons are grouped together at the bottom in a horizontal row, and there is generous padding between each button.
 
 **Stateless & stateful widgets**
 
@@ -17,11 +17,11 @@ We use stateful widgets throughout the app because our map and compass constantl
 
 **Accessing sensors**
 
-Requires GPS location and compass bearing of device for the map and compass views to calculate distance and direction towards vehicles. 
+Our app requires the GPS location and compass bearing of the user's device for the map and compass views to calculate the user's distance and direction from vehicles and stations. 
 
 **Querying web services**
 
-Connects to two APIs for two different companies of scooters/bikes, converts the data from JSONs into usable dart objects, and uses those objects for the rest of the app. 
+Our app connects to two APIs for two different companies of scooters/bikes (Lime and Link), converts the data from JSONs into usable dart objects, and uses those objects for the rest of the app. 
 
 **Drawing with canvas**
 
@@ -32,7 +32,11 @@ Functionality for users to draw on the map view using Canvas to plan out paths t
 
 **Describe what changed from your original concept to your final implementation? Why did you make those changes from your original design vision?**
 
-We changed ...
+From the original approach we changed a few things. We originally had additional information about the selected vehicle display below the legend, but we moved this into the compass view for the specific vehicle. We also made the legend on the map view more of a filter + legend functionality where users could show/hide vehicle types and move to their current location. We changed these because it made more sense to display everything about a specific vehicle in its own view, and added legend functionality reduced lag and seemed to be a useful feature.
+
+We also simplified a lot of vehicle specific information we wanted to display such as battery life on scooters because we wanted to keep relatively consistent information for all vehicle types. We still show availability, distance, direction as we feel these are the most important features. 
+We decided to add the canvas drawing feature we theorized about as it differentiates us from existing apps and also fits one of the requirements. 
+The last thing we added was a city selector view that lets the user display the vehicles of specific cities directly. This is because the APIs we have do not cover the entire globe, so it does not make sense to have users looking at those areas. The city selector provides a good way for users located in the intended cities to view their relevant vehicles.
 
 **Discuss how doing this project challenged and/or deepened your understanding of these topics.**
 
