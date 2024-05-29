@@ -1,11 +1,4 @@
-# lemun
-
-A new Flutter project.
-
-## Resources used:
-
-https://stackoverflow.com/questions/65458903/socketexception-connection-failed-os-error-operation-not-permitted-errno-1
-
+# LemÚn
 
 ## Build steps:
 - Clone the repository using 'git clone git@gitlab.cs.washington.edu:cse340-24spring-students/final_project-brian127-dgao2-rshanth-jmarc23.git'
