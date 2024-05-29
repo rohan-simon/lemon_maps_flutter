@@ -5,7 +5,56 @@ import 'package:lemun/providers/scooter_provider.dart';
 import 'package:provider/provider.dart';
 
 class CitySelector extends StatelessWidget {
-  const CitySelector(BuildContext context, {super.key});
+  CitySelector(BuildContext context, {super.key});
+
+  // Creating map representations of each country.
+  final Map<String, Cities> unitedStates = {
+    'Chicago': Cities.chicago,
+    'Cleveland': Cities.cleveland,
+    'Colorado Springs': Cities.colorado_springs,
+    'Detroit': Cities.detroit,
+    'Grand Rapids': Cities.grand_rapids,
+    'Louisville': Cities.louisville,
+    'New York': Cities.new_york,
+    'Norfolk': Cities.norfolk_va,
+    'Oakland': Cities.oakland,
+    'San Francisco': Cities.san_francisco,
+    'San Jose': Cities.san_jose,
+    'Seattle': Cities.seattle,
+    'Washington D.C.': Cities.washington_dc,
+  };
+  final Map<String, Cities> germany = {
+    'Hamburg': Cities.hamburg,
+    'Oberhausen': Cities.oberhausen,
+    'Reutlingen': Cities.reutlingen,
+    'Solingen': Cities.solingen,
+  };
+  final Map<String, Cities> switzerland = {
+    'Opfikon': Cities.opfikon,
+    'Zug': Cities.zug,
+  };
+  final Map<String, Cities> france = {
+    'Marseille': Cities.marseille,
+    'Paris': Cities.paris,
+  };
+  final Map<String, Cities> canada =  {
+    'Edmonton': Cities.edmonton,
+    'Kelowna': Cities.kelowna,
+  };
+  final Map<String, Cities> israel =  {
+    'Tel Aviv': Cities.tel_aviv,
+  };
+  final Map<String, Cities> norway =  {
+    'Oslo': Cities.oslo,
+  };
+  final Map<String, Cities> italy =  {
+    'Rome': Cities.rome,
+    'Verona': Cities.verona,
+  };
+  final Map<String, Cities> belgium =  {
+    'Antwerp': Cities.antwerp,
+    'Brussels': Cities.brussels,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -13,77 +62,48 @@ class CitySelector extends StatelessWidget {
       builder: (context, scooterProvider, unchangingChild) => ListView(
         scrollDirection: Axis.vertical,
         children: [
-          const DrawerHeader(
-            child: Text('Choose a city'),
+          Container(
+            height: 80,
+            margin: const EdgeInsets.only(bottom: 8.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+            child: const Text('Select City', style: TextStyle(fontSize: 20)),
           ),
-
-          // US
-          _buildHeader('United States'),
-          _buildCityButton('Cleveland', Cities.cleveland, scooterProvider),
-          _buildCityButton('Detroit', Cities.detroit, scooterProvider),
-          _buildCityButton('Grand Rapids', Cities.grand_rapids, scooterProvider),
-          _buildCityButton('New York', Cities.new_york, scooterProvider),
-          _buildCityButton('Norfolk', Cities.norfolk_va, scooterProvider),
-          _buildCityButton('Washington D.C.', Cities.washington_dc, scooterProvider),
-          _buildCityButton('Colorado Springs', Cities.colorado_springs, scooterProvider),
-          _buildCityButton('Louisville', Cities.louisville, scooterProvider),
-          _buildCityButton('Oakland', Cities.oakland, scooterProvider),
-          _buildCityButton('San Francisco', Cities.san_francisco, scooterProvider),
-          _buildCityButton('San Jose', Cities.san_jose, scooterProvider),
-          _buildCityButton('Seattle', Cities.seattle, scooterProvider),
-          _buildCityButton('Chicago', Cities.chicago, scooterProvider),
-
-          const Divider(),
-
-          // Germany
-          _buildHeader('Germany'),
-          _buildCityButton('Hamburg', Cities.hamburg, scooterProvider),
-          _buildCityButton('Oberhausen', Cities.oberhausen, scooterProvider),
-          _buildCityButton('Reutlingen', Cities.reutlingen, scooterProvider),
-          _buildCityButton('Solingen', Cities.solingen, scooterProvider),
-          const Divider(),
-
-          // Switzerland
-          _buildHeader('Switzerland'),
-          _buildCityButton('Opfikon', Cities.opfikon, scooterProvider),
-          _buildCityButton('Zug', Cities.zug, scooterProvider),
-          const Divider(),
-
-          // France
-          _buildHeader('France'),
-          _buildCityButton('Paris', Cities.paris, scooterProvider),
-          _buildCityButton('Marseille', Cities.marseille, scooterProvider),
-          const Divider(),
-
-          // Canada
-          _buildHeader('Canada'),
-          _buildCityButton('Kelowna', Cities.kelowna, scooterProvider),
-          _buildCityButton('Edmonton', Cities.edmonton, scooterProvider),
-          const Divider(),
-
-          // Israel
-          _buildHeader('Israel'),
-          _buildCityButton('Tel Aviv', Cities.tel_aviv, scooterProvider),
-          const Divider(),
-          
-          // Norway
-          _buildHeader('Norway'),
-          _buildCityButton('Oslo', Cities.oslo, scooterProvider),
-          const Divider(),
-
-          // Italy
-          _buildHeader('Italy'),
-          _buildCityButton('Rome', Cities.rome, scooterProvider),
-          _buildCityButton('Verona', Cities.verona, scooterProvider),
-          const Divider(),
-
-          // Belgium
-          _buildHeader('Belgium'),
-          _buildCityButton('Antwerp', Cities.antwerp, scooterProvider),
-          _buildCityButton('Brussels', Cities.brussels, scooterProvider),
-
+          _buildCountry('United States', unitedStates, scooterProvider), // Building each country
+          _buildCountry('Belgium', belgium, scooterProvider),
+          _buildCountry('Canada', canada, scooterProvider),
+          _buildCountry('France', france, scooterProvider),
+          _buildCountry('Israel', israel, scooterProvider),
+          _buildCountry('Italy', italy, scooterProvider),
+          _buildCountry('Norway', norway, scooterProvider),
+          _buildCountry('Switzerland', switzerland, scooterProvider),
         ],
       ),
+    );
+  }
+
+  // Builds a country selection from provided country name, map of cities, and provider.
+  // Parameters:
+  // - String country: name of the country
+  // - Map<String, Cities> cities: map of cities in the country, with their Cities counterpart
+  // - ScooterProvider provider: scooter provider
+  Widget _buildCountry(String country, Map<String, Cities> cities, ScooterProvider provider) {
+    return Column(
+      children: [
+        const Divider(color: Color.fromARGB(255, 213, 192, 74)),
+        _buildHeader(country),
+        GridView.count(
+          physics: const NeverScrollableScrollPhysics(),
+          childAspectRatio: 2.2,
+          padding: const EdgeInsets.all(10),
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+          shrinkWrap: true,
+          crossAxisCount: 2,
+          children: cities.entries.map((city) {
+            return _buildCityButton(city.key, city.value, provider);
+          }).toList()
+        )
+      ],
     );
   }
 
@@ -97,8 +117,11 @@ class CitySelector extends StatelessWidget {
       hint: 'cities below belong to $text',
       child: Column(
         children: [
-          Text(text),
-          const Divider()
+          Text(
+            text,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)
+          ),
+          //const Divider()
         ]
       ),
     );
@@ -117,28 +140,39 @@ class CitySelector extends StatelessWidget {
       selected: selected,
       label: 'city',
       hint: 'Press to change city to $name',
-      child: Row(
-        children: [
-          InkWell(
-          onTap: () {
+      child: Center(
+        child: ElevatedButton(
+          onPressed: () {
             // update state
             provider.city = city;
             ScooterChecker sc = ScooterChecker(provider);
             sc.fetchLime();
           },
-          hoverColor: Colors.green,
-          child: Row(
+          style: ButtonStyle(
+            backgroundColor: selected 
+                  ? const WidgetStatePropertyAll<Color>(Color.fromARGB(255, 255, 242, 175))
+                  : const WidgetStatePropertyAll<Color>(Colors.white),
+            shadowColor: selected 
+                  ? const WidgetStatePropertyAll<Color>(Colors.white)
+                  : null
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center, 
+            mainAxisAlignment: MainAxisAlignment.center, 
             children: [
-              Text(name),
-              if (selected) const Icon(
-                Icons.check,
-                color: Colors.green,
+              Expanded(
+                child: Center(
+                  child: Text(
+                    name,
+                    style: const TextStyle(fontSize: 13,), 
+                    textAlign: TextAlign.center,
+                  )
+                )
               )
-            ],
-          )
-        ),]
-      ),
+            ]
+          ),
+        ),
+      )
     );
   }
-
 }

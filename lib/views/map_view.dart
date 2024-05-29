@@ -72,6 +72,18 @@ class MapViewState extends State<MapView> {
     }
   }
 
+  // Returns the provided vehicle's type as a string.
+  // Parameter:
+  //      vehicle: the vehicle to turn into a String
+  String _vehicleTypeAsString(Vehicle vehicle) {
+    switch(vehicle.vehicleType) {
+      case VehicleType.bike: return 'Bike';
+      case VehicleType.scooter: return 'Scooter';
+      case VehicleType.bus: return 'Bus Stop';
+      default: throw Exception('Invalid vehicle');
+    }
+  }
+
   // Create a list of markers to place on the map signifying available vehicles
   // Parameters:
   //      vehicles: a list of Vehicle objects to create markers for
@@ -84,24 +96,27 @@ class MapViewState extends State<MapView> {
         width: 70.0,
         height: 70.0,
         point: LatLng(vehicle.latitude, vehicle.longitude),
-        child: GestureDetector(
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => CompassView(vehicle: vehicle)));
-          },
-          child: Opacity(
-            opacity: 0.75,
-            child: Align(
-              alignment: Alignment.center,
-              child: Container(
-                padding: const EdgeInsets.all(5),
-                decoration: const BoxDecoration(
-                  color: Colors.black,
-                  shape: BoxShape.circle,
+        child: Semantics(
+          label: 'Marker: ${_vehicleTypeAsString(vehicle)}.',
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => CompassView(vehicle: vehicle)));
+            },
+            child: Opacity(
+              opacity: 0.75,
+              child: Align(
+                alignment: Alignment.center,
+                child: Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: const BoxDecoration(
+                    color: Colors.black,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Opacity(opacity: 1, child: getVehicleIcon(vehicle.vehicleType)),
                 ),
-                child: Opacity(opacity: 1, child: getVehicleIcon(vehicle.vehicleType)),
               ),
-            ),
-          )
+            )
+          ),
         )
       );
     }).toList();
@@ -178,35 +193,34 @@ class MapViewState extends State<MapView> {
                 children: [
                   Expanded(
                     child: Semantics(
-                      label: (bikeColor == Colors.grey ? 'currently unselected' : 'currently selected'),
-                      selected: true,
+                      label: 'Bike. ${bikeColor == Colors.grey ? 'currently not filtered' : 'currently filtered'}',
                       child: GestureDetector(
                         onTap: () {
                           _toggleVehicleType(VehicleType.bike);
                         },
-                        child: legendItem(Icons.directions_bike, bikeColor, 'Bike')
+                        child: ExcludeSemantics(child: legendItem(Icons.directions_bike, bikeColor, 'Bike'))
                       ),
                     ),
                   ),
                   Expanded(
                     child: Semantics(
-                      label: (scooterColor == Colors.grey ? 'currently unselected' : 'currently selected'),
+                      label: 'Scooter. ${bikeColor == Colors.grey ? 'currently not filtered' : 'currently filtered'}',
                       child: GestureDetector(
                         onTap: () {
                           _toggleVehicleType(VehicleType.scooter);
                         },
-                        child: legendItem(Icons.electric_scooter, scooterColor, 'Scooter')
+                        child: ExcludeSemantics(child: legendItem(Icons.electric_scooter, scooterColor, 'Scooter'))
                       ),
                     ),
                   ),
                   Expanded(
                     child: Semantics(
-                      label: (busColor == Colors.grey ? 'currently unselected' : 'currently selected'),
+                      label: 'Bus Stop. ${bikeColor == Colors.grey ? 'currently not filtered' : 'currently filtered'}',
                       child: GestureDetector(
                         onTap: () {
                           _toggleVehicleType(VehicleType.bus);
                         },
-                        child: legendItem(Icons.directions_bus, busColor, 'Bus Stop')
+                        child: ExcludeSemantics(child: legendItem(Icons.directions_bus, busColor, 'Bus Stop'))
                       ),
                     ),
                   ),
@@ -298,7 +312,7 @@ class MapViewState extends State<MapView> {
           }
           return Semantics(
             label: 'map view',
-            excludeSemantics: true,
+            // excludeSemantics: true,
             child: FlutterMap(
               mapController: _mapController,
               options: MapOptions(

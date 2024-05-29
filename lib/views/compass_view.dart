@@ -198,7 +198,6 @@ class _CompassViewState extends State<CompassView> {
   // Builds the UI from the provided context.
   @override
   Widget build(BuildContext context) {
-    
     DateTime updatedAt = DateTime.now();
     Color accentColor = _getAccentColor();
     Color textColor = _getTextColor();
@@ -212,14 +211,19 @@ class _CompassViewState extends State<CompassView> {
           color: textColor,
         ),
         backgroundColor: accentColor,
-        title: Row(
-          children: [
-            Text(
-              '${_vehicleTypeAsString()} ',
-              style: TextStyle(color: textColor),
+        title: Semantics(
+          label: _vehicleTypeAsString(),
+          child: ExcludeSemantics(
+            child: Row(
+              children: [
+                Text(
+                  '${_vehicleTypeAsString()} ',
+                  style: TextStyle(color: textColor),
+                ),
+                Icon(_getIcon(), color: textColor)
+              ],
             ),
-            Icon(_getIcon(), color: textColor)
-          ],
+          ),
         ),
       ),
 
@@ -255,22 +259,27 @@ class _CompassViewState extends State<CompassView> {
                     _buildCompass(positionProvider), // Compass
                     const SizedBox(height: 10),
                     // Distance text
-                    Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: Container(
-                        alignment: Alignment.center,
-                        padding: //const EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 10),
-                                    const EdgeInsets.all(5.0),
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 
-                                                math.min(accentColor.red + 16, 255), 
-                                                math.min(accentColor.green + 31, 255),
-                                                math.min(accentColor.blue + 38, 255)),
-                          borderRadius: const BorderRadius.all(Radius.circular(50))
-                        ),
-                        child: Text(
-                          '~${_distanceToString(_getDistance(positionProvider.latitude, positionProvider.longitude))} away',
-                          style: TextStyle(fontSize: 20, color: textColor),
+                    Semantics(
+                      label: 'Approximately ${_distanceToString(_getDistance(positionProvider.latitude, positionProvider.longitude))} away',
+                      child: ExcludeSemantics(
+                        child: Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: Container(
+                            alignment: Alignment.center,
+                            padding: //const EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 10),
+                                        const EdgeInsets.all(5.0),
+                            decoration: BoxDecoration(
+                              color: Color.fromARGB(255, 
+                                                    math.min(accentColor.red + 16, 255), 
+                                                    math.min(accentColor.green + 31, 255),
+                                                    math.min(accentColor.blue + 38, 255)),
+                              borderRadius: const BorderRadius.all(Radius.circular(50))
+                            ),
+                            child: Text(
+                              '~${_distanceToString(_getDistance(positionProvider.latitude, positionProvider.longitude))} away',
+                              style: TextStyle(fontSize: 20, color: textColor),
+                            ),
+                          ),
                         ),
                       ),
                     )
@@ -291,26 +300,61 @@ class _CompassViewState extends State<CompassView> {
   // Parameter:
   // - String name: bus stop's name
   Widget _buildBusStopName(String name) {
-    return Container(
-      alignment: Alignment.center,
-      padding: const EdgeInsets.all(8),
-      decoration: const BoxDecoration(
-        color:Color.fromARGB(255, 69, 141, 172),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: TextScroll(
-          '$name          ',
-          textAlign: TextAlign.center,
-          velocity: const Velocity(pixelsPerSecond: Offset(100, 0)),
-          mode: TextScrollMode.endless,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-          )
+    return Semantics(
+      label: 'Station name: $name',
+      excludeSemantics: true,
+      child: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.all(8),
+        decoration: const BoxDecoration(
+          color:Color.fromARGB(255, 69, 141, 172),
         ),
-      )
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: TextScroll(
+            '$name          ',
+            textAlign: TextAlign.center,
+            velocity: const Velocity(pixelsPerSecond: Offset(100, 0)),
+            mode: TextScrollMode.endless,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+            )
+          ),
+        )
+      ),
     );
+  }
+
+  // Converts the provided time into a semantics label and returns it as a String.
+  // Only considers hour and minutes.
+  // Parameter:
+  // - DateTime time: the time to convert into a semantics label
+  String _timeAsSemantics(DateTime time) {
+    String label = '';
+    bool isAfternoon = false;
+    if (time.hour == 0) {
+      label = '12';
+    } else if (time.hour == 12) {
+      label = '12';
+      isAfternoon = true;
+    } else if (time.hour > 12) {
+      label = '${time.hour % 12}';
+      isAfternoon = true;
+    } else {
+      label = '${time.hour}';
+    }
+    if (time.minute < 10) {
+      label = '$label:0${time.minute}';
+    } else {
+      label = '$label:${time.minute}';
+    }
+    if (isAfternoon) {
+      label = '$label p.m.';
+    } else {
+      label = '$label a.m.';
+    }
+    return label;
   }
 
   // Builds a widget representing a scooter or bike's status text.
@@ -326,56 +370,61 @@ class _CompassViewState extends State<CompassView> {
     if (updatedAt.minute < 10) {
       minute = '0$minute';
     }
-    return Padding(
-      padding: const EdgeInsets.only(right: 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: accentColor,
-              borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
-              boxShadow: const [BoxShadow(
-                color: Color.fromARGB(255, 167, 167, 167),
-                offset: Offset(2.0, 2.0),
-                blurRadius: 4.0,
-                spreadRadius: 1.0,
-              )],
-            ),
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+    return Semantics(
+      label: '$statusText, Last updated at ${_timeAsSemantics(updatedAt)}',
+      child: ExcludeSemantics(
+        child: Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: accentColor,
+                  borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+                  boxShadow: const [BoxShadow(
+                    color: Color.fromARGB(255, 167, 167, 167),
+                    offset: Offset(2.0, 2.0),
+                    blurRadius: 4.0,
+                    spreadRadius: 1.0,
+                  )],
+                ),
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          statusText,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          )
+                        ),
+                        Icon(
+                          icon,
+                          color: iconColor,
+                        )
+                      ],
+                    ),
                     Text(
-                      statusText,
+                      'Last updated ${updatedAt.hour}:$minute',
                       style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        color: Color.fromARGB(255, 59, 59, 59),
                       )
                     ),
-                    Icon(
-                      icon,
-                      color: iconColor,
-                    )
                   ],
                 ),
-                Text(
-                  'Last updated ${updatedAt.hour}:$minute',
-                  style: const TextStyle(
-                    color: Color.fromARGB(255, 59, 59, 59),
-                  )
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -384,33 +433,38 @@ class _CompassViewState extends State<CompassView> {
   // Parameter:
   // - PositionProvider positionProvider: the position provider
   Widget _buildCompass(PositionProvider positionProvider) {
-    return StreamBuilder<CompassEvent>(
-      stream: FlutterCompass.events,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text('Error reading heading: ${snapshot.error}');
-        }
-
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
-        double? direction = snapshot.data!.heading;
-
-        // if direction is null, then device does not support this sensor
-        // show error message
-        if (direction == null) {
-          return const Center(
-            child: Text("Device does not have sensors !"),
-          );
-        }
-        return Transform.rotate(
-          angle: (_degrees2Radians(direction) * -1 + _degrees2Radians(_getBearing(positionProvider.latitude, positionProvider.longitude))),
-          child: const Image(image: AssetImage('lib/assets/lemun_compass.png'))
-        );
-      },
+    return Semantics(
+      label: 'Lemon Compass, currently pointed at the selected ${_vehicleTypeAsString()}',
+      child: ExcludeSemantics(
+        child: StreamBuilder<CompassEvent>(
+          stream: FlutterCompass.events,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Text('Error reading heading: ${snapshot.error}');
+            }
+        
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+        
+            double? direction = snapshot.data!.heading;
+        
+            // if direction is null, then device does not support this sensor
+            // show error message
+            if (direction == null) {
+              return const Center(
+                child: Text("Device does not have sensors !"),
+              );
+            }
+            return Transform.rotate(
+              angle: (_degrees2Radians(direction) * -1 + _degrees2Radians(_getBearing(positionProvider.latitude, positionProvider.longitude))),
+              child: const Image(image: AssetImage('lib/assets/lemun_compass.png'))
+            );
+          },
+        ),
+      ),
     );
   }
 

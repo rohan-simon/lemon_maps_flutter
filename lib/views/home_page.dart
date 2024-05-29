@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:lemun/helpers/scooter_checker.dart';
 import 'package:lemun/models/bus_stop.dart';
@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
     // Initial state of app is no canvas shown
     singleUseOpacityProvider.appBar = _buildAppBar(context, true);
     singleUseOpacityProvider.drawer = Drawer(
-      backgroundColor: const Color.fromARGB(255, 248, 221, 86),
+      backgroundColor: const Color.fromARGB(255, 255, 235, 137),
       child: CitySelector(context)
     );
 
@@ -120,12 +120,12 @@ class _HomePageState extends State<HomePage> {
     double height = MediaQuery.of(context).size.height;
     Opacity canvas;
     AppBar appBar = _buildAppBar(context, nonListen.showCanvas);
-    Drawer? drawer;
+    Widget? drawer;
 
     if (nonListen.showCanvas) {
       canvas = const Opacity(opacity: 0.0);
       drawer = Drawer(
-        backgroundColor: _backgroundColor,
+        backgroundColor: const Color.fromARGB(255, 255, 235, 137),
         child: CitySelector(context)
       );
     } else {
@@ -133,9 +133,12 @@ class _HomePageState extends State<HomePage> {
         opacity: 0.99,
         child: DrawArea(width: width, height: height)
       );
-      drawer = Drawer(
-        backgroundColor: _backgroundColor,
-        child: Palette(context),
+      drawer = SizedBox(
+        width: math.min(200, MediaQuery.of(context).size.width),
+        child: Drawer(
+          backgroundColor: const Color.fromARGB(255, 255, 235, 137),
+          child: Palette(context),
+        ),
       );
     }
     nonListen.updateCanvas(canvas, !nonListen.showCanvas, appBar, drawer);
@@ -175,49 +178,30 @@ class _HomePageState extends State<HomePage> {
 
     // Button to display the canvas has been tapped. Show button to exit and clear, and a color drawer.
     return AppBar(
-          backgroundColor: _backgroundColor,
-          elevation: 4,
-          shadowColor: Colors.black,
-          title: const Text('Draw your path'),
-          actions: <Widget>[
-            Semantics(
-              button: true,
-              label: 'Clear',
-              hint: 'clears the canvas',
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 255, 237, 147),
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    onPressed: () {_clear(context); _showHideCanvas(context);}, 
-                    icon: const Icon(Icons.clear)
-                  ),
-                  ),
+      backgroundColor: _backgroundColor,
+      elevation: 4,
+      shadowColor: Colors.black,
+      title: const Text('Draw your path'),
+      actions: <Widget>[
+        Semantics(
+          button: true,
+          label: 'Clear',
+          hint: 'clears the canvas',
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 255, 237, 147),
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                onPressed: () {_clear(context); _showHideCanvas(context);}, 
+                icon: const Icon(Icons.clear)
               ),
               ),
-
-          //   Semantics(
-          //     button: true,
-          //     label: 'Canvas',
-          //     hint: 'allows drawing on the map',
-          //     child: Padding(
-          //       padding: const EdgeInsets.all(5.0),
-          //       child: Container(
-          //         decoration: const BoxDecoration(
-          //           color: Color.fromARGB(255, 255, 237, 147),
-          //           shape: BoxShape.circle,
-          //         ),
-          //         child: IconButton(
-          //           onPressed: () => _showHideCanvas(context),
-          //           icon: const Icon(Icons.edit)
-          //         ),
-          //       ),
-          //     )
-          //   ),
-          ]
-        );
+          ),
+        ),
+      ]
+    );
   }
 }

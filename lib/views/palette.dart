@@ -13,23 +13,51 @@ class Palette extends StatelessWidget {
       builder: (context, drawingProvider, unchangingChild) => ListView(
         scrollDirection: Axis.vertical,
         children: [
-          const SizedBox(
-            height: 100,
-            child: DrawerHeader(
-              child: Text('Colors'),
+          Container(
+            margin: const EdgeInsets.only(bottom: 8.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Select Color', style: TextStyle(fontSize: 20)),
+                const SizedBox(height: 5),
+                Container(
+                  height: 25,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    color: drawingProvider.colorSelected,
+                    border: Border.all(
+                      width: 0.5,
+                      color: const Color.fromARGB(255, 94, 94, 94),
+                      style: BorderStyle.solid,
+                    )
+                  )
+                ),
+              ],
             ),
           ),
-
+          const Divider(color: Color.fromARGB(255, 213, 192, 74)),
+          
+          Container(
+            margin: const EdgeInsets.only(bottom: 8.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 3.0, 16.0, 8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildColorButton('Black', Colors.black, drawingProvider),
+                _buildColorButton('White', Colors.white, drawingProvider),
+                _buildColorButton('Red', Colors.red, drawingProvider),
+                _buildColorButton('Orange', Colors.orange, drawingProvider),
+                _buildColorButton('Yellow', Colors.yellow, drawingProvider),
+                _buildColorButton('Green', Colors.green, drawingProvider),
+                _buildColorButton('Blue', Colors.blue, drawingProvider),
+                _buildColorButton('Purple', Colors.purple, drawingProvider),
+              ],
+            ),
+          ),
           // colors
-          _buildColorButton('Red', Colors.red, drawingProvider),
-          _buildColorButton('Orange', Colors.orange, drawingProvider),
-          _buildColorButton('Yellow', Colors.yellow, drawingProvider),
-          _buildColorButton('Green', Colors.green, drawingProvider),
-          _buildColorButton('Blue', Colors.blue, drawingProvider),
-          _buildColorButton('Purple', Colors.purple, drawingProvider),
-          _buildColorButton('White', Colors.white, drawingProvider),
-          _buildColorButton('Black', Colors.black, drawingProvider),
-
         ],
       ),
     );
@@ -43,16 +71,11 @@ class Palette extends StatelessWidget {
   Widget _buildColorButton(String name, Color color,  DrawingProvider provider) {
     bool selected = provider.colorSelected == color;
 
-    var backgroundColor = switch(color) {
-      Colors.black => Colors.grey,
-      _ => Colors.black
-    };
-
     return Semantics(
       button: true,
       selected: selected,
       label: 'name',
-      hint: 'Press to change to $name',
+      hint: 'Double tap to change colour to $name',
       child: InkWell(
         onTap: () {
           // manage state
@@ -63,14 +86,23 @@ class Palette extends StatelessWidget {
           children: [
             Stack(
               children: [
-                Icon(Icons.circle, color: backgroundColor, size: 28),
-                Icon(
-                  Icons.circle,
-                  color: color,
-               )
+                 Container(
+                  margin: const EdgeInsets.only(bottom: 5, right: 7),
+                  height: 35,
+                  width: 35,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    color: color,
+                    border: Border.all(
+                      width: 0.5,
+                      color: const Color.fromARGB(255, 94, 94, 94),
+                      style: BorderStyle.solid,
+                    )
+                  )
+                ),
               ],
             ),
-            Text(name),
+            Text('$name  '),
             if (selected) const Icon(
               Icons.check,
               color: Colors.green,
