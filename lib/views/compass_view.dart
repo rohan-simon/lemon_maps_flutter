@@ -112,7 +112,7 @@ class _CompassViewState extends State<CompassView> {
   bool _availStatus() {
     final vehicle = widget.vehicle;
     if (vehicle is LinkScooter) {
-      return vehicle.isBookable;
+      return vehicle.vehicleStatus == 'available';
     } else if (vehicle is Lime) {
       return !vehicle.isDisabled && !vehicle.isReserved; // Ensures that the Lime vehicle is both enabled and not reserved.
     } else if (vehicle is BusStop) {
