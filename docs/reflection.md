@@ -17,11 +17,11 @@ We use stateful widgets throughout the app because our map and compass constantl
 
 **Accessing sensors**
 
-Our app requires the GPS location and compass bearing of the user's device for the map and compass views to calculate distance and direction to vehicles. 
+Our app requires the GPS location and compass bearing of the user's device for the map and compass views to calculate the user's distance and direction from vehicles and stations. 
 
 **Querying web services**
 
-Connects to two APIs for two different companies of scooters/bikes, converts the data from JSONs into usable dart objects, and uses those objects for the rest of the app. 
+Our app connects to two APIs for two different companies of scooters/bikes (Lime and Link), converts the data from JSONs into usable dart objects, and uses those objects for the rest of the app. 
 
 **Drawing with canvas**
 
@@ -32,7 +32,8 @@ Functionality for users to draw on the map view using Canvas to plan out paths t
 
 **Describe what changed from your original concept to your final implementation? Why did you make those changes from your original design vision?**
 
-From the original approach we changed a few things. We originally had additional information about the selected vehicle display below the legend, but we moved this into the compass view for the specific vehicle. We also made the legend on the map view more of a filter + legend functionality where users could show/hide vehicle types and move to their current location. We changed these because it made more sense to display everything about a specific vehicle in its own view, and added legend functionality reduced lag and seemed to be a useful feature
+From the original approach we changed a few things. We originally had additional information about the selected vehicle display below the legend, but we moved this into the compass view for the specific vehicle. We also made the legend on the map view more of a filter + legend functionality where users could show/hide vehicle types and move to their current location. We changed these because it made more sense to display everything about a specific vehicle in its own view, and added legend functionality reduced lag and seemed to be a useful feature.
+
 We also simplified a lot of vehicle specific information we wanted to display such as battery life on scooters because we wanted to keep relatively consistent information for all vehicle types. We still show availability, distance, direction as we feel these are the most important features. 
 We decided to add the canvas drawing feature we theorized about as it differentiates us from existing apps and also fits one of the requirements. 
 The last thing we added was a city selector view that lets the user display the vehicles of specific cities directly. This is because the APIs we have do not cover the entire globe, so it does not make sense to have users looking at those areas. The city selector provides a good way for users located in the intended cities to view their relevant vehicles.
