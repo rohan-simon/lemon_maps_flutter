@@ -72,6 +72,7 @@ class CitySelector extends StatelessWidget {
           _buildCountry('Belgium', belgium, scooterProvider),
           _buildCountry('Canada', canada, scooterProvider),
           _buildCountry('France', france, scooterProvider),
+          _buildCountry('Germany', germany, scooterProvider),
           _buildCountry('Israel', israel, scooterProvider),
           _buildCountry('Italy', italy, scooterProvider),
           _buildCountry('Norway', norway, scooterProvider),
