@@ -40,7 +40,17 @@ The last thing we added was a city selector view that lets the user display the 
 
 **Discuss how doing this project challenged and/or deepened your understanding of these topics.**
 
-This project [...]
+For properties of people vision: we used the proximity grouping strategy for city selector, color selector, and the filter. This project gave more understanding towards these principles on a non-structured app. 
+
+For properties of people motor control: we deepened our understanding of how large touch targets should be and how much spacing should be between buttons. In our original app before we did a self-accessibility audit the buttons on the legend were way too small. Changing this caused a lot of issues with overflow and spacing so we had to rework the legend. 
+
+For stateful and stateless widgets: we reinforced our understanding of using stateful widgets by implementing two main classes that are based on the functionality of stateful widgets, the map view and the compass view. 
+
+For accessing sensors: we used a new sensor which was the gyrometer that we use to calculate direction for the compass.
+
+For querying web services: we queried different APIs from multiple sources to combine them into one application. 
+
+For drawing with canvas: aside from the original canvas we figured out how to make the canvas display over the map view but being transparent, except for the strokes that we draw on the map for the planning route.
 
 **Describe two areas of future work for your app, including how you could increase the accessibility and usability of this app**
 
