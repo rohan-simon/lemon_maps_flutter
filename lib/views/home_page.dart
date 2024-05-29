@@ -55,12 +55,16 @@ class _HomePageState extends State<HomePage> {
 
         return Scaffold(
           appBar: opacityProvider.appBar,
-          drawer: opacityProvider.drawer,
+          drawer: Semantics(
+            label: (opacityProvider.showCanvas) 
+                  ? 'Color selector' 
+                  : 'City selector',
+            child: opacityProvider.drawer),
           body: Center(
             child: Stack(
               children: [
-                MapView(vehicles: allVehicles, showLegend: !opacityProvider.showCanvas,),
-                opacityProvider.canvas
+                MapView(vehicles: allVehicles, showLegend: !opacityProvider.showCanvas),
+                Semantics(label: 'canvas', child: opacityProvider.canvas),
               ],
             ),
           ),
@@ -152,53 +156,64 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: _backgroundColor,
         elevation: 4,
         shadowColor: Colors.black,
-        title: const Text('LemÚn', style: TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 55, 37, 58))),
+        title: Semantics(
+          label: 'Lemon',
+          child: const ExcludeSemantics(
+            child: Text(
+              'LemÚn',
+              style: TextStyle(
+                fontWeight: FontWeight.bold, 
+                color: Color.fromARGB(255, 55, 37, 58)
+              )
+            )
+          )
+        ),
         actions: <Widget>[
-          Semantics(
-            button: true,
-            label: 'Canvas',
-            hint: 'allows drawing on the map',
-            child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Container(
-                decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 255, 237, 147),
-                    shape: BoxShape.circle,
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Container(
+              decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 255, 237, 147),
+                  shape: BoxShape.circle,
+                ),
+              child: Semantics(
+                label: 'Button. Enter drawing mode. Double tap to activate.',
+                child: ExcludeSemantics(
+                  child: IconButton(
+                    onPressed: () => _showHideCanvas(context),
+                    icon: const Icon(Icons.edit)
                   ),
-                child: IconButton(
-                  onPressed: () => _showHideCanvas(context),
-                  icon: const Icon(Icons.edit)
                 ),
               ),
-            )
+            ),
           )
         ]
       );
     }
 
-    // Button to display the canvas has been tapped. Show button to exit and clear, and a color drawer.
+    // Button to display the canvas has been tapped. Show button to clear and exit, title, and a color drawer.
     return AppBar(
       backgroundColor: _backgroundColor,
       elevation: 4,
       shadowColor: Colors.black,
-      title: const Text('Draw your path'),
+      title: const Text('Path draw'),
       actions: <Widget>[
-        Semantics(
-          button: true,
-          label: 'Clear',
-          hint: 'clears the canvas',
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 255, 237, 147),
-                shape: BoxShape.circle,
+        Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Color.fromARGB(255, 255, 237, 147),
+              shape: BoxShape.circle,
+            ),
+            child: Semantics(
+              label: 'Button. Clear and exit drawing mode. Double tap to activate.',
+              child: ExcludeSemantics(
+                child: IconButton(
+                  onPressed: () {_clear(context); _showHideCanvas(context);}, 
+                  icon: const Icon(Icons.clear)
+                ),
               ),
-              child: IconButton(
-                onPressed: () {_clear(context); _showHideCanvas(context);}, 
-                icon: const Icon(Icons.clear)
-              ),
-              ),
+            ),
           ),
         ),
       ]

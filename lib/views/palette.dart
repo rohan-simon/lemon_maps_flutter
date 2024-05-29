@@ -16,25 +16,30 @@ class Palette extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(bottom: 8.0),
             padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Select Color', style: TextStyle(fontSize: 20)),
-                const SizedBox(height: 5),
-                Container(
-                  height: 25,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    color: drawingProvider.colorSelected,
-                    border: Border.all(
-                      width: 0.5,
-                      color: const Color.fromARGB(255, 94, 94, 94),
-                      style: BorderStyle.solid,
+            child: Semantics(
+              label: 'Select color',
+              hint: 'currently selected: ${_colourAsString(drawingProvider.colorSelected)}',
+              excludeSemantics: true,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Select Color', style: TextStyle(fontSize: 20)),
+                  const SizedBox(height: 5),
+                  Container(
+                    height: 25,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color: drawingProvider.colorSelected,
+                      border: Border.all(
+                        width: 0.5,
+                        color: const Color.fromARGB(255, 94, 94, 94),
+                        style: BorderStyle.solid,
+                      )
                     )
-                  )
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
           ),
           const Divider(color: Color.fromARGB(255, 213, 192, 74)),
@@ -63,6 +68,24 @@ class Palette extends StatelessWidget {
     );
   }
 
+  // Returns String representation of the provided colour;
+  // Only defined on basic colours for this app.
+  // Parameter:
+  // - Color colour: colour to get String representation of
+  String _colourAsString(Color colour) {
+    switch(colour) {
+      case Colors.white: return 'white';
+      case Colors.black: return 'black';
+      case Colors.red: return 'red';
+      case Colors.orange: return 'orange';
+      case Colors.yellow: return 'yellow';
+      case Colors.green: return 'green';
+      case Colors.blue: return 'blue';
+      case Colors.purple: return 'purple';
+      default: return colour.toString();
+    }
+  }
+
   /// Builds a button to change the color
   /// paramaters:
   ///  - name: The name of the color
@@ -74,8 +97,9 @@ class Palette extends StatelessWidget {
     return Semantics(
       button: true,
       selected: selected,
-      label: 'name',
+      label: 'colour: $name.',
       hint: 'Double tap to change colour to $name',
+      excludeSemantics: true,
       child: InkWell(
         onTap: () {
           // manage state

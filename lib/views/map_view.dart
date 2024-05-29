@@ -294,83 +294,86 @@ class MapViewState extends State<MapView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Consumer<PositionProvider>(
-        builder: (context, positionProvider, child) {
-          
-          if (!positionProvider.status && !positionProvider.loadFailure) {
-            _fetchPermissionStatus();
-            return const Center(child: CircularProgressIndicator());
-          } else if (positionProvider.loadFailure) {
-            return _buildPermissionSheet();
-          }
-
-          if (_mapReady) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              _updateCurrentLocation();
-            });
-          }
-          return Semantics(
-            label: 'map view',
-            // excludeSemantics: true,
-            child: FlutterMap(
-              mapController: _mapController,
-              options: MapOptions(
-                maxZoom: 19,
-                minZoom: 10,
-                initialCenter:  _currentPosition,
-                onMapReady: _onMapReady,
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.example.app',
+    return Semantics(
+      excludeSemantics: !widget.showLegend,
+      child: Scaffold(
+        body: Consumer<PositionProvider>(
+          builder: (context, positionProvider, child) {
+            
+            if (!positionProvider.status && !positionProvider.loadFailure) {
+              _fetchPermissionStatus();
+              return const Center(child: CircularProgressIndicator());
+            } else if (positionProvider.loadFailure) {
+              return _buildPermissionSheet();
+            }
+      
+            if (_mapReady) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                _updateCurrentLocation();
+              });
+            }
+            return Semantics(
+              label: 'map view',
+              // excludeSemantics: true,
+              child: FlutterMap(
+                mapController: _mapController,
+                options: MapOptions(
+                  maxZoom: 19,
+                  minZoom: 10,
+                  initialCenter:  _currentPosition,
+                  onMapReady: _onMapReady,
                 ),
-                Builder(
-                  builder: (context) {
-                    if (MapCamera.of(context).zoom > 16) {
+                children: [
+                  TileLayer(
+                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    userAgentPackageName: 'com.example.app',
+                  ),
+                  Builder(
+                    builder: (context) {
+                      if (MapCamera.of(context).zoom > 16) {
+                        return MarkerLayer(
+                          markers: [
+                            ...createVehicleMarkers(widget.vehicles),
+                            Marker(
+                              width: 40,
+                              height: 40,
+                              point: _currentPosition,
+                              rotate: false,
+                              child: Container(
+                                decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                                child: const Icon(Icons.catching_pokemon, color: Colors.red, size: 40)),
+                            )                    
+                          ]
+                        );
+                      }
                       return MarkerLayer(
                         markers: [
-                          ...createVehicleMarkers(widget.vehicles),
                           Marker(
                             width: 40,
                             height: 40,
                             point: _currentPosition,
                             rotate: false,
                             child: Container(
-                              decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                              decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle), 
                               child: const Icon(Icons.catching_pokemon, color: Colors.red, size: 40)),
-                          )                    
+                          )
                         ]
                       );
                     }
-                    return MarkerLayer(
-                      markers: [
-                        Marker(
-                          width: 40,
-                          height: 40,
-                          point: _currentPosition,
-                          rotate: false,
-                          child: Container(
-                            decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle), 
-                            child: const Icon(Icons.catching_pokemon, color: Colors.red, size: 40)),
-                        )
-                      ]
-                    );
-                  }
-                )
-              ],
-            ),
-          );
-        }
-      ),
-      bottomNavigationBar: Builder(
-        builder: (context) {
-          if (widget.showLegend) {
-            return buildLegend();
+                  )
+                ],
+              ),
+            );
           }
-          return Container(height: 0);
-        }
+        ),
+        bottomNavigationBar: Builder(
+          builder: (context) {
+            if (widget.showLegend) {
+              return buildLegend();
+            }
+            return Container(height: 0);
+          }
+        ),
       ),
     );
   }

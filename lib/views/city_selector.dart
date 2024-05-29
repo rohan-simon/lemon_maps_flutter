@@ -81,7 +81,7 @@ class CitySelector extends StatelessWidget {
     );
   }
 
-  // Builds a country selection from provided country name, map of cities, and provider.
+  // Builds a country's city selection from provided country name, map of cities, and provider.
   // Parameters:
   // - String country: name of the country
   // - Map<String, Cities> cities: map of cities in the country, with their Cities counterpart
@@ -114,7 +114,6 @@ class CitySelector extends StatelessWidget {
     return Semantics(
       button: false,
       label: 'country',
-      hint: 'cities below belong to $text',
       child: Column(
         children: [
           Text(
@@ -135,44 +134,44 @@ class CitySelector extends StatelessWidget {
   Widget _buildCityButton(String name, Cities city, ScooterProvider provider) {
     bool selected = provider.city == city;
 
-    return Semantics(
-      button: true,
-      selected: selected,
-      label: 'city',
-      hint: 'Press to change city to $name',
-      child: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            // update state
-            provider.city = city;
-            ScooterChecker sc = ScooterChecker(provider);
-            sc.fetchLime();
-          },
-          style: ButtonStyle(
-            backgroundColor: selected 
-                  ? const WidgetStatePropertyAll<Color>(Color.fromARGB(255, 255, 242, 175))
-                  : const WidgetStatePropertyAll<Color>(Colors.white),
-            shadowColor: selected 
-                  ? const WidgetStatePropertyAll<Color>(Colors.white)
-                  : null
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center, 
-            mainAxisAlignment: MainAxisAlignment.center, 
-            children: [
-              Expanded(
-                child: Center(
-                  child: Text(
-                    name,
-                    style: const TextStyle(fontSize: 13,), 
-                    textAlign: TextAlign.center,
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          // update state
+          provider.city = city;
+          ScooterChecker sc = ScooterChecker(provider);
+          sc.fetchLime();
+        },
+        style: ButtonStyle(
+          backgroundColor: selected 
+                ? const WidgetStatePropertyAll<Color>(Color.fromARGB(255, 255, 242, 175))
+                : const WidgetStatePropertyAll<Color>(Colors.white),
+          shadowColor: selected 
+                ? const WidgetStatePropertyAll<Color>(Colors.white)
+                : null
+        ),
+        child: Semantics(
+          label: '${selected ? 'selected' : 'not selected'}, City: $name.',
+          hint: 'Double tap to change city to $name',
+          child: ExcludeSemantics(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center, 
+              mainAxisAlignment: MainAxisAlignment.center, 
+              children: [
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      name,
+                      style: const TextStyle(fontSize: 13,), 
+                      textAlign: TextAlign.center,
+                    )
                   )
                 )
-              )
-            ]
+              ]
+            ),
           ),
         ),
-      )
+      ),
     );
   }
 }
