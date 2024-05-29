@@ -69,3 +69,12 @@ Clicking a marker on the map brings you to compass_view for that marker
 ### lib/main.dart
 
 - Builds the bus db and creates providers for all the data models, calling home_page and starting the app
+
+## Data design and data flow
+No user data is stored by this app. We use Lists to store the bikes, scooters, and bus stops with providers to update the data stored by those lists.
+
+We created a provider that will periodically check with the scooter and bike APIs to make sure the vehicles nearby are up to date, which will update the Lists used to populate the map.
+
+We created a provider to manage the state of the entire app, between being able to scroll through the map and being able to draw a path. This was done by toggling on and off a transparent version of the drawing app that we made, and changing what the drawer would contain (between colors and cities).
+
+We used the same provider framework that was used in the drawing app to manage drawing state. We also used the same framework that was used in the food finder app to have a position provider that updates the users position and places them on the map.
