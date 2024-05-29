@@ -14,12 +14,17 @@ Similar purpose buttons are grouped together and the button sizes are large enou
 **Stateless & stateful widgets**
 
 We use stateful widgets throughout the app because our map and compass constantly changed based on API queries and user location and rotation. The palette and city selector are stateless because they have a set number of options that do not change. 
-Accessing sensors (force, GPS, etc.) requires GPS location and compass bearing of device for the map and compass views to calculate distance and direction towards vehicles. 
+
+**Accessing sensors**
+
+Requires GPS location and compass bearing of device for the map and compass views to calculate distance and direction towards vehicles. 
 
 **Querying web services**
 
 Connects to two APIs for two different companies of scooters/bikes, converts the data from JSONs into usable dart objects, and uses those objects for the rest of the app. 
-Drawing with Canvas, e.g. for custom UI widgets/components
+
+**Drawing with canvas**
+
 Functionality for users to draw on the map view using Canvas to plan out paths they want to take. They can change the color of their path and clear the path to redraw one. 
 
 
