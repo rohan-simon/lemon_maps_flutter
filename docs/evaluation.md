@@ -26,6 +26,8 @@ Draw a route to the second nearest bus station.
 ### Ratings:
 Answer each question on a scale of 1(strongly disagree) - 5 (strongly agree).
 
+*Values rounded to 3 decimal places.*
+
 | Name | Q1 | Q2 | Q3 | Q4 | Q5 | Q6 | Q7 | Q8 | Q9 | Q10 | Score | Learnability | Usability (rounded) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Cynthia | 2 | 3 | 3 | 3 | 3 | 1 | 4 | 2 | 3 | 2 | 60 | 62.5 | 59.375 |
