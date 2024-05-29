@@ -264,6 +264,7 @@ class MapViewState extends State<MapView> {
     );
   }
 
+  // Fetches user's permission status.
   void _fetchPermissionStatus() {
     Permission.locationWhenInUse.status.then((status) {
       if (mounted) {
@@ -272,6 +273,9 @@ class MapViewState extends State<MapView> {
     });
   }
 
+  // Builds a permission sheet (should not be encountered by user) with
+  // a button that takes user to their settings app and requests location.
+  // No parameters.
   Widget _buildPermissionSheet() {
     return Center(
       child: Column(
@@ -314,7 +318,6 @@ class MapViewState extends State<MapView> {
             }
             return Semantics(
               label: 'map view',
-              // excludeSemantics: true,
               child: FlutterMap(
                 mapController: _mapController,
                 options: MapOptions(

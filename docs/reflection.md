@@ -41,7 +41,10 @@ This project [...]
 **Describe two areas of future work for your app, including how you could increase the accessibility and usability of this app**
 
 One way we could improve the app is improving the Canvas drawing path functionality. Currently a user would click the edit button to start drawing, but in this draw view would not be able to actuate with the map (pan or zoom). The path also disappears when exiting the draw view. In the future we could integrate the canvas with the map more so that you can draw on the map while being able to move the map, and have the path persist when going back to the map view. 
-Another way we could improve the performance of the app, especially in vehicle dense areas is to cluster nearby vehicles together when zooming out. This would reduce the amount of markers being displayed on the map at once which is a source of lag and performance issues currently. This would make the app more usable on more devices, and in crowded metropolitan areas such as Seattle downtown. 
+
+Another way we could improve the performance of the app, especially in vehicle dense areas is to cluster nearby vehicles together when zooming out. This would reduce the amount of markers being displayed on the map at once which is a source of lag and performance issues currently. This would make the app more usable on more devices, and in crowded metropolitan areas such as Seattle downtown.
+
+Finally, implementing a search feature for the app to allow users to search for bus stops, cities, or other general landmarks would likely increase our app's ease of use, allowing users to better navigate to locations that are relevant to them.
 
 
 ## Citations

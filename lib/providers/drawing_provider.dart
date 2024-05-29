@@ -59,7 +59,6 @@ class DrawingProvider extends ChangeNotifier {
 
   /// Creates a drawing using all of the past actions
   _createCachedDrawing() {
-
     List<DrawAction> actions = _pastActions;
 
     // Handle if a clear happened
@@ -72,8 +71,6 @@ class DrawingProvider extends ChangeNotifier {
       }
       actions = _pastActions.getRange(i, _pastActions.length).toList();
     }
-    // actions.add(_pendingAction);
-    // _pastActions.add(_pendingAction);
 
     _drawing = Drawing(
       actions, 
@@ -86,34 +83,6 @@ class DrawingProvider extends ChangeNotifier {
   _invalidateAndNotify() {
     _drawing = null;
     notifyListeners();
-  }
-
-  /// Adds the latest action to the drawing
-  /// paramaters:
-  ///  - action: the action to add
-  add(DrawAction action) {
-    // _pastActions.add(action);
-    // _createCachedDrawing();
-  }
-
-  /// Undos the most recent action
-  undo() {
-    if (_pastActions.isEmpty) {
-      return;
-    }
-    DrawAction undo = _pastActions.removeAt(_pastActions.length - 1);
-    _futureActions.add(undo);
-    _createCachedDrawing();
-  }
-
-  /// Redos the most recent undo
-  redo() {
-    if (_futureActions.isEmpty) {
-      return;
-    }
-    DrawAction redo = _futureActions.removeAt(_futureActions.length - 1);
-    _pastActions.add(redo);
-    _createCachedDrawing();
   }
 
   /// Clears the canvas. Is undoable.

@@ -1,6 +1,7 @@
 import 'package:lemun/models/vehicle.dart';
 import 'package:lemun/models/vehicle_types.dart';
 
+// This class represents a Lime vehicle (i.e. bike or scooter).
 class Lime implements Vehicle {
   String id;
   @override
