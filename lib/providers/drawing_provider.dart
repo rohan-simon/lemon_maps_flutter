@@ -61,16 +61,6 @@ class DrawingProvider extends ChangeNotifier {
   _createCachedDrawing() {
     List<DrawAction> actions = _pastActions;
 
-    // Handle if a clear happened
-    if (_pastActions.contains(ClearAction())) {
-      int i;
-      for (i = _pastActions.length - 1; i > 0; i--) {
-        if (_pastActions.elementAt(i) == ClearAction()) {
-          break;
-        }
-      }
-      actions = _pastActions.getRange(i, _pastActions.length).toList();
-    }
 
     _drawing = Drawing(
       actions, 
@@ -87,12 +77,7 @@ class DrawingProvider extends ChangeNotifier {
 
   /// Clears the canvas. Is undoable.
   clear() {
-    if (_pastActions.isEmpty || _pastActions.last is ClearAction) {
-      return;
-    }
-    _pastActions.add(ClearAction());
-    _createCachedDrawing();
-    notifyListeners();
+    _pastActions.clear();
   }
 
   /// Adds the pending stroke to the canvas
