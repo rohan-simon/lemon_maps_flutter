@@ -4,8 +4,8 @@
 - Clone this repository
 - Cd into the repository
 - Run 'flutter pub get'
-- Run the project either 'flutter run'
-- You can also run the project by linking through Xcode if testing on an Apple device or simulator
+- Run the project 'flutter run'
+- *You can also run the project by linking through Xcode if testing on an Apple device or simulator*
 - Once the app is ready, you can pan, zoom around the map, click on bikes, scooters, and bus stops to gain information about them, and use the legend to enable/disable vehicle types and move to your location
 
 ## Project Gallery
