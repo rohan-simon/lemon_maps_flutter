@@ -8,7 +8,12 @@
 - You can also run the project by linking through Xcode if testing on an Apple device or simulator
 - Once the app is ready, you can pan, zoom around the map, click on bikes, scooters, and bus stops to gain information about them, and use the legend to enable/disable vehicle types and move to your location
 
-## Project structure:
+## Project Gallery
+<img width="1387" alt="Screenshot 2024-10-03 at 9 21 05 PM" src="https://github.com/user-attachments/assets/7f5e7c1f-1428-4b9e-bf30-3fc3ebe4045e">
+<img width="1380" alt="Screenshot 2024-10-03 at 9 22 20 PM" src="https://github.com/user-attachments/assets/b5d3a5a6-25d0-4e7b-8dc6-85b2ccd9473e">
+
+
+## Project Structure:
 
 ### lib/assets/
 
