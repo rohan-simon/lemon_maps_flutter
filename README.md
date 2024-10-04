@@ -1,11 +1,11 @@
-# LemÚn
+# Lemon Maps (Flutter Beta)
 
 ## Build steps:
-- Clone the repository using 'git clone git@gitlab.cs.washington.edu:cse340-24spring-students/final_project-brian127-dgao2-rshanth-jmarc23.git'
+- Clone this repository
 - Cd into the repository
 - Run 'flutter pub get'
-- Run the project using 'flutter run' or whatever works
-- You will have to enable location permissions
+- Run the project either 'flutter run'
+- You can also run the project by linking through Xcode, if testing on an Apple device or simulator
 - Once the app is ready, you can pan, zoom around the map, click on bikes, scooters, and bus stops to gain information about them, and use the legend to enable/disable vehicle types and move to your location
 
 ## Project structure:
@@ -63,11 +63,8 @@ Clicking a marker on the map brings you to compass_view for that marker
 
 - Builds the bus db and creates providers for all the data models, calling home_page and starting the app
 
-## Data design and data flow
-No user data is stored by this app. We use Lists to store the bikes, scooters, and bus stops with providers to update the data stored by those lists.
+## Basic Data Design and Data Flow
 
-We created a provider that will periodically check with the scooter and bike APIs to make sure the vehicles nearby are up to date, which will update the Lists used to populate the map.
+Flutter provider used to periodically check with the scooter and bike APIs to make sure the vehicles nearby are up to date, which will update the Lists used to populate the map.
+Provider used to manage the state of the entire app, between being able to scroll through the map and being able to draw a path. This was done by toggling on and off a transparent version of the drawing app that we made, and changing what the drawer would contain (between colors and cities).
 
-We created a provider to manage the state of the entire app, between being able to scroll through the map and being able to draw a path. This was done by toggling on and off a transparent version of the drawing app that we made, and changing what the drawer would contain (between colors and cities).
-
-We used the same provider framework that was used in the drawing app to manage drawing state. We also used the same framework that was used in the food finder app to have a position provider that updates the users position and places them on the map.
